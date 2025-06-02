@@ -1,8 +1,12 @@
 from pynput import keyboard, mouse
-from flask import Flask
+from flask import Flask, request
+from flask_restful import reqparse
+from record import recordEvents
+from play import playEvents
 from action import Action
 import webbrowser
 import time
+import json
 try:
     actionFile = open("./actions.txt","r")
     actionFile.close()
@@ -17,44 +21,22 @@ webbrowser.open("127.0.0.1:5000")
 def helloWorld():
     return {"status": "healthy"}
 
-@app.route("/record")
+@app.route("/record", methods=['GET'])
 def record():
-    #listener outputs
-    mouseActions = []
-    keyboardActions = []
-    #throttle for mouse movements to not to take up so much space
-    lastOnMove = time.time()
-    #TODO: allow user to set how much mouse updates will spam the feed
-    mouseMoveUpdateRate = 1/5
-    def on_move(x, y):
-        nonlocal lastOnMove
-        if(time.time()-lastOnMove > mouseMoveUpdateRate):
-            lastOnMove = time.time()
-            mouseActions.append(('move', x, y))
-    def on_click(x, y, button, pressed):
-        mouseActions.append(('click', x, y, str(button), pressed))
-    def on_scroll(x, y, dx, dy):
-        mouseActions.append(('scroll', x, y, dx, dy))
-    #keyboard handling
-    def on_press(key):
-        try:
-            k = key.char
-        except AttributeError:
-            k = str(key)
-        keyboardActions.append(('press', k))
-        # Stop recording if 'a' is pressed
-        if k == 'Key.esc':
-            keyboardActions.pop()
-            return False
+    return recordEvents()
 
-    with keyboard.Listener(on_press=on_press) as k_listener, mouse.Listener(on_move=on_move,on_click=on_click,on_scroll=on_scroll) as m_listener:
-        k_listener.join()
-        m_listener.stop()
-        m_listener.join()
+@app.route("/play/<action_name>", methods=['GET'])
+def play(action_name):
+    return playEvents(action_name,1)
 
-    actionMade = Action("testName",keyboardActions,mouseActions)
-    return actionMade.to_dict()
-
-@app.route("/actions")
+parser = reqparse.RequestParser()
+parser.add_argument('list', type=list)
+@app.route("/actions/save/<action_name>")
+def saveAction(action_name):
+    args = parser.parse_args()
+    with open('actions/{}.txt'.format(action_name), 'w') as outfile:
+                json.dump(request.data, outfile)
+                
+@app.route("/actions/")
 def getActions():
     return {"status": "healthy"}

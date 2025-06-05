@@ -3,7 +3,6 @@ from flask import Flask, request
 from flask_restful import reqparse
 from record import recordEvents
 from play import playEvents
-from action import Action
 import webbrowser
 import time
 import json

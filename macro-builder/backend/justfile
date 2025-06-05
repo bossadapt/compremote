@@ -1,7 +1,4 @@
-init:
+run:
     sudo apt install python3.12-venv
-    python3 -m venv ./.venv/
-    pip install Flask
-    pip install pynput
-run: 
-    flask --app backend run
+    python3 -m venv venv
+    . venv/bin/activate && pip install Flask flask_restful pynput && flask --app backend run

@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import ActionMini from './ActionMini.vue'
 import type { Action } from '../../helpers/sharedInterfaces'
+import { useStateStore } from '@/stores/state';
 
-defineProps<{
-  actions: Action[]
-}>()
+let state = useStateStore()
 </script>
 
 <template>
   <div class="mini-main-container">
     <h1 class="containerHeader">Actions</h1>
-    <li v-for="action in actions">
-      <ActionMini />
+    <li v-for="action in state.actions">
+      <ActionMini :action="action"/>
     </li>
+    <ActionMini :action="null"/>
   </div>
 </template>
 <style scoped>

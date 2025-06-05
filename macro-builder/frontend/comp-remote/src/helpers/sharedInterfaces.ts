@@ -1,6 +1,6 @@
 export interface Action {
-  Name: String
-  Events: (KeyboardEvent | MouseEvent)[]
+  name: string
+  events: (KeyboardEvent | MouseEvent)[]
 }
 export interface KeyboardEvent {
   _time: number

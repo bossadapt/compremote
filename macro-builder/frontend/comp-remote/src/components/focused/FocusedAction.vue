@@ -1,25 +1,25 @@
 <script setup lang="ts">
+import { useStateStore } from '@/stores/state'
 import type { Action } from '../../helpers/sharedInterfaces'
-
-defineProps<{
-  focusedAction: Action | null
-}>()
+import CreateAction from './CreateAction.vue'
+import EditAction from './EditAction.vue'
+let state = useStateStore()
 </script>
 
 <template>
   <div class="focus-main-container">
-    <div v-if="focusedAction!==null" class="focus-main-header">
-      <h1 class="focus-main-header-text">Focused Action Name...</h1>
+    <div v-if="state.focusedAction !== null" class="focus-main-header">
+      <h1 class="focus-main-header-text">{{ state.focusedAction.name }}</h1>
       <button class="save-button">Save</button>
     </div>
     <div v-else>
-        <h1 class="focus-main-header-text">Create New Action</h1>
+      <h1 class="focus-main-header-text">Create New Action</h1>
+      create
     </div>
     <div class="focus-hr"></div>
-    <div v-if="focusedAction!==null">
-      
-    </div>
-</div>
+    <EditAction v-if="state.focusedAction !== null"></EditAction>
+    <CreateAction v-else></CreateAction>
+  </div>
 </template>
 
 <style scoped>
@@ -27,7 +27,7 @@ defineProps<{
   width: 65%;
   width: 100%;
 }
-.focus-main-header{
+.focus-main-header {
   display: flex;
   flex-direction: row;
 }
@@ -40,9 +40,8 @@ defineProps<{
   font-size: 64px;
   margin-bottom: 0px;
   margin-top: 1%;
-
 }
-.save-button{
+.save-button {
   cursor: pointer;
   width: 10%;
   background-color: var(--secondary);
@@ -50,9 +49,9 @@ defineProps<{
   font-size: 20px;
   color: var(--primary);
 }
-.focus-hr{
+.focus-hr {
   height: 9px;
   width: 100%;
-  background-image: linear-gradient(to right, var(--primary),5%,var(--secondary));
+  background-image: linear-gradient(to right, var(--primary), 5%, var(--secondary));
 }
 </style>

@@ -17,7 +17,7 @@ let state = useStateStore()
       create
     </div>
     <div class="focus-hr"></div>
-    <EditAction v-if="state.focusedAction !== null"></EditAction>
+    <EditAction  v-if="state.focusedAction !== null"></EditAction>
     <CreateAction v-else></CreateAction>
   </div>
 </template>

@@ -8,7 +8,7 @@ const inputName: Ref<string>= ref("")
   <div class="container">
     <h2>Name</h2>
     st<input v-model="inputName" placeholder="name required" />
-    <button>Start with recording</button>
+    <button v-on:click="state.createActionByRecording(inputName)">Start with recording</button>
     <button v-on:click="state.addAction({ name: inputName, events: [] })">Start Empty</button>
   </div>
 </template>

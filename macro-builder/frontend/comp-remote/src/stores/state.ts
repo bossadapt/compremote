@@ -10,6 +10,28 @@ export const useStateStore = defineStore('state', () => {
   const focusedAction: Ref<Action | null> = ref(null)
 
   //TODO: create a recording pipline using isrecording changing app.vue
+  async function createActionByRecording(name: string) {
+    if (!isValidFilename(name)) {
+      createWarningMessage('unable to start, name attempted is an invalid filename(windows/linux)')
+    } else {
+      isRecording.value = true
+      try {
+        let response = await fetch('http://localhost:3334/record')
+        if (!response.ok) {
+          createWarningMessage('failed to pull reach backend to record')
+          throw new Error(`response status: ${response.status}`)
+        }
+        let newAction: Action = { name, events: [] }
+        //console.log(response.json())
+        newAction.events = await response.json()
+        addAction(newAction)
+      } catch (error) {
+        createWarningMessage('error deserializing data')
+        console.error(error)
+      }
+      isRecording.value = false
+    }
+  }
   async function syncActions() {
     let response = await fetch('http://localhost:3334/actions')
     try {
@@ -18,7 +40,6 @@ export const useStateStore = defineStore('state', () => {
         throw new Error(`response status: ${response.status}`)
       }
       const json: Action[] = await response.json()
-      console.log(json)
       actions.value = json
     } catch (error) {
       createWarningMessage('error deserializing data')
@@ -51,7 +72,6 @@ export const useStateStore = defineStore('state', () => {
     }
   }
   function removeAction(removedAction: Action) {
-    console.l
     fetch('http://localhost:3334/actions/remove/' + removedAction.name, {
       method: 'DELETE',
     })
@@ -82,6 +102,7 @@ export const useStateStore = defineStore('state', () => {
     warningMessage,
     syncActions,
     createWarningMessage,
+    createActionByRecording,
     addAction,
     removeAction,
   }

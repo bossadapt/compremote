@@ -1,15 +1,11 @@
 <script setup lang="ts">
-import type { Action,MouseEvent,KeyboardEvent } from '@/helpers/sharedInterfaces'
-import { useStateStore } from '@/stores/state';
+import { useStateStore } from '@/stores/state'
+import EditEntryContainer from './editComponents/EditEntryContainer.vue'
 let state = useStateStore()
 </script>
 <template>
-  <li style="display: flex; flex-direction: row" v-for="event in state.focusedAction!.events">
-    <!-- for mouse events-->
-    <div v-if="'button' in event">
-    </div>
-        <!-- for keyboard events-->
-    <div v-else></div>
-</li>
+  <li style="display: flex; flex-direction: column" v-for="event in state.focusedAction!.events">
+    <EditEntryContainer :event="event"></EditEntryContainer>
+  </li>
 </template>
 <style></style>

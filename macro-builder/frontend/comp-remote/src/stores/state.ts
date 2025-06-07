@@ -9,7 +9,6 @@ export const useStateStore = defineStore('state', () => {
   const isInitializing: Ref<boolean> = ref(true)
   const focusedAction: Ref<Action | null> = ref(null)
 
-  //TODO: create a recording pipline using isrecording changing app.vue
   async function createActionByRecording(name: string) {
     if (!isValidFilename(name)) {
       createWarningMessage('unable to start, name attempted is an invalid filename(windows/linux)')
@@ -21,17 +20,17 @@ export const useStateStore = defineStore('state', () => {
           createWarningMessage('failed to pull reach backend to record')
           throw new Error(`response status: ${response.status}`)
         }
-        let newAction: Action = { name, events: [] }
-        //console.log(response.json())
-        newAction.events = await response.json()
+        let newAction: Action = { name, events: await response.json() }
+        console.log(newAction.events)
         addAction(newAction)
       } catch (error) {
-        createWarningMessage('error deserializing data')
+        createWarningMessage('error deserializing record data')
         console.error(error)
       }
       isRecording.value = false
     }
   }
+
   async function syncActions() {
     let response = await fetch('http://localhost:3334/actions')
     try {
@@ -47,6 +46,7 @@ export const useStateStore = defineStore('state', () => {
     }
     isInitializing.value = false
   }
+
   function addAction(newAction: Action) {
     console.log('add action called')
     let newName: string = newAction.name.trim()
@@ -71,6 +71,7 @@ export const useStateStore = defineStore('state', () => {
       focusedAction.value = newAction
     }
   }
+
   function removeAction(removedAction: Action) {
     fetch('http://localhost:3334/actions/remove/' + removedAction.name, {
       method: 'DELETE',
@@ -82,6 +83,7 @@ export const useStateStore = defineStore('state', () => {
       focusedAction.value = null
     }
   }
+
   async function createWarningMessage(message: string) {
     warningMessage.value = message
     sleep(8000).then(() => {
@@ -91,9 +93,11 @@ export const useStateStore = defineStore('state', () => {
       }
     })
   }
+
   function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms))
   }
+
   return {
     actions,
     isRecording,

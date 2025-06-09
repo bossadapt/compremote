@@ -33,6 +33,9 @@ onMounted(() => {
   --accent: #5395c8;
   --danger: #a71a1a;
 }
+h3{
+  color: var(--text);
+}
 body {
   font-family: 'JetBrains Mono';
   background-color: var(--background);

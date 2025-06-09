@@ -1,6 +1,11 @@
 import { ref, computed, type Ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { Action } from '@/helpers/sharedInterfaces'
+import { ToggleStatus, TypeEnum } from '@/helpers/sharedInterfaces'
+import type {
+  Action,
+  EventUnion,
+  KeyboardEvent as MyKeyboardEvent,
+} from '@/helpers/sharedInterfaces'
 import isValidFilename from 'valid-filename'
 export const useStateStore = defineStore('state', () => {
   const warningMessage: Ref<string | null> = ref(null)
@@ -60,13 +65,7 @@ export const useStateStore = defineStore('state', () => {
     ) {
       createWarningMessage('unable to save, this name already exists')
     } else {
-      fetch('http://localhost:3334/actions/save/' + newAction.name, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newAction.events),
-      })
+      saveAction(newAction)
       actions.value.push(newAction)
       focusedAction.value = newAction
     }
@@ -97,7 +96,72 @@ export const useStateStore = defineStore('state', () => {
   function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms))
   }
+  function saveAction(action2save: Action) {
+    //TODO: maybe run checks for valid input if you ask the user to press all the keys on thier keyboard on first boot
+    fetch('http://localhost:3334/actions/save/' + action2save.name, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(action2save.events),
+    }).then((req) => {
+      if (!req.ok) {
+        createWarningMessage('Failed to save action to computer')
+      }
+    })
+  }
+  //FOR specific focused action editing
 
+  function addEvent(idx: number, type: TypeEnum) {
+    let newEntry: EventUnion
+    switch (type) {
+      case TypeEnum.KeyboardEvent:
+        newEntry = { type: TypeEnum.KeyboardEvent, toggle: ToggleStatus.PRESSED, key: 'Key.space' }
+        break
+      case TypeEnum.MouseButtonEvent:
+        newEntry = {
+          type: TypeEnum.MouseButtonEvent,
+          toggle: ToggleStatus.RELEASED,
+          button: 'button.Left',
+          x: 0,
+          y: 0,
+        }
+        break
+      case TypeEnum.MouseMoveEvent:
+        newEntry = { type: TypeEnum.MouseMoveEvent, x: 0, y: 0 }
+        break
+      case TypeEnum.MouseScrollEvent:
+        newEntry = {
+          type: TypeEnum.MouseScrollEvent,
+          vertical_direction: 0,
+          horizontal_direction: 0,
+          x: 0,
+          y: 0,
+        }
+        break
+
+      case TypeEnum.WaitEvent:
+        newEntry = { type: TypeEnum.WaitEvent, time: 0 }
+        break
+    }
+    focusedAction.value?.events.splice(idx, 0, newEntry)
+  }
+  function removeEvent(idx: number) {
+    focusedAction.value?.events.splice(idx, 1)
+  }
+  function playFocused() {
+    console.log('Play focused called')
+    if (focusedAction.value != null) {
+      console.log('focused was not null')
+      fetch('http://localhost:3334/actions/play/' + focusedAction.value.name).then((req) => {
+        if (!req.ok) {
+          createWarningMessage('Failed to play from backend')
+        }
+      })
+    } else {
+      createWarningMessage('cannot play when there is no focus')
+    }
+  }
   return {
     actions,
     isRecording,
@@ -109,5 +173,9 @@ export const useStateStore = defineStore('state', () => {
     createActionByRecording,
     addAction,
     removeAction,
+    addEvent,
+    removeEvent,
+    saveAction,
+    playFocused,
   }
 })

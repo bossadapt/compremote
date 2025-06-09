@@ -10,14 +10,21 @@ let state = useStateStore()
   <div class="focus-main-container">
     <div v-if="state.focusedAction !== null" class="focus-main-header">
       <h1 class="focus-main-header-text">{{ state.focusedAction.name }}</h1>
-      <button class="save-button">Save</button>
+      <button
+        class="save-button"
+        @click="state.playFocused()"
+        style="background-color: var(--primary); color: var(--secondary)"
+      >
+        Play
+      </button>
+      <button class="save-button" @click="state.saveAction(state.focusedAction)">Save</button>
     </div>
     <div v-else>
       <h1 class="focus-main-header-text">Create New Action</h1>
       create
     </div>
     <div class="focus-hr"></div>
-    <EditAction  v-if="state.focusedAction !== null"></EditAction>
+    <EditAction v-if="state.focusedAction !== null"></EditAction>
     <CreateAction v-else></CreateAction>
   </div>
 </template>

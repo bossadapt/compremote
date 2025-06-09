@@ -27,9 +27,10 @@ def helloWorld():
 def record():
     return recordEvents()
 
-@app.route("/play/<action_name>", methods=['GET'])
+@app.route("/actions/play/<action_name>", methods=['GET'])
 def play(action_name):
-    return playEvents(action_name,1)
+    playEvents('actions/{}.txt'.format(action_name),1)
+    return {"status": "finished"}
 
 @app.route("/actions/save/<action_name>", methods=['PATCH'])
 def saveAction(action_name):
@@ -41,6 +42,7 @@ def saveAction(action_name):
 @app.route("/actions/remove/<action_name>", methods=['DELETE'])
 def removeAction(action_name):
     os.remove("./actions/{}{}".format(action_name,".txt"))
+    return {"status": "finished"}
 
 @app.route("/actions")
 def getActions():

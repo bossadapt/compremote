@@ -1,40 +1,74 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { TypeEnum } from '../../../helpers/sharedInterfaces'
-import type { EventUnion } from '../../../helpers/sharedInterfaces'
-import KeyboardEvent from './inners/KeyboardEvent.vue'
-import MouseButtonEvent from './inners/MouseButtonEvent.vue'
-import MouseMoveEvent from './inners/MouseMoveEvent.vue'
-import MouseScrollEvent from './inners/MouseScrollEvent.vue'
-import WaitEvent from './inners/WaitEvent.vue'
+import type {
+  EventUnion,
+  KeyboardEvent,
+  MouseButtonEvent,
+  MouseMoveEvent,
+  MouseScrollEvent,
+  WaitEvent,
+} from '../../../helpers/sharedInterfaces'
+import KeyboardEventInner from './inners/KeyboardEventInner.vue'
+import MouseButtonEventInner from './inners/MouseButtonEventInner.vue'
+import MouseMoveEventInner from './inners/MouseMoveEventInner.vue'
+import MouseScrollEventInner from './inners/MouseScrollEventInner.vue'
+import WaitEventInner from './inners/WaitEventInner.vue'
+import { useStateStore } from '@/stores/state'
+import AddEvent from './AddEvent.vue'
+const state  = useStateStore();
 defineProps<{
-  event: EventUnion
+  event: EventUnion,
+  idx: number
 }>()
 </script>
 <template>
   <div class="main">
     <div class="main-edit-container">
-      <!-- TODO: Drag button -->
-      <KeyboardEvent v-if="event.type === TypeEnum.KeyboardEvent"></KeyboardEvent>
-      <MouseButtonEvent v-if="event.type === TypeEnum.MouseButtonEvent"></MouseButtonEvent>
-      <MouseMoveEvent v-if="event.type === TypeEnum.MouseMoveEvent"></MouseMoveEvent>
-      <MouseScrollEvent v-if="event.type === TypeEnum.MouseScrollEvent"></MouseScrollEvent>
-      <WaitEvent v-if="event.type === TypeEnum.WaitEvent"></WaitEvent>
-      <!-- TODO: Delete button -->
+      <!-- TODO: add handle button https://sagalbot.github.io/vue-sortable/ -->
+      <KeyboardEventInner
+        v-if="event.type === TypeEnum.KeyboardEvent"
+        :event="event as KeyboardEvent"
+      ></KeyboardEventInner>
+      <MouseButtonEventInner
+        v-if="event.type === TypeEnum.MouseButtonEvent"
+        :event="event as MouseButtonEvent"
+      ></MouseButtonEventInner>
+      <MouseMoveEventInner
+        v-if="event.type === TypeEnum.MouseMoveEvent"
+        :event="event as MouseMoveEvent"
+      ></MouseMoveEventInner>
+      <MouseScrollEventInner
+        v-if="event.type === TypeEnum.MouseScrollEvent"
+        :event="event as MouseScrollEvent"
+      ></MouseScrollEventInner>
+      <WaitEventInner
+        v-if="event.type === TypeEnum.WaitEvent"
+        :event="event as WaitEvent"
+      ></WaitEventInner>
+      <button @click="state.removeEvent(idx)">Remove</button>
     </div>
-    <div class="main-add-container">
-      <!-- TODO: Add new editentrycontainer under button -->
-    </div>
+    <AddEvent :idx="idx+1"></AddEvent>
   </div>
 </template>
 <style scoped>
-.main{
-display: flex;
-flex-direction: column;
+.main {
+  display: flex;
+  flex-direction: column;
+  margin-left: 2%;
+  margin-right: 2%;
+  background-color: var(--secondary);
+  border-radius: 18px;
+  margin-top: 1%;
 }
-.main-edit-container{
-
-}
-.main-add-container{
-
+.main-edit-container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  margin-left: 2%;
+  margin-right: 2%;
+  margin-top: 0.5%;
+  margin-bottom: 0.5%;
+  justify-content: center;
 }
 </style>

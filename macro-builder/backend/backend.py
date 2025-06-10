@@ -1,12 +1,13 @@
 from pynput import keyboard, mouse
 from flask import Flask, request
 from flask_cors import CORS
-from record import recordEvents
-from play import playEvents
+from record import record_events
+from play import play_events
 import webbrowser
 import time
 import json
 import os
+from helpers import get_next_key, get_cord
 try:
     actionFile = open("./actions.txt","r")
     actionFile.close()
@@ -25,11 +26,11 @@ def helloWorld():
 
 @app.route("/record", methods=['GET'])
 def record():
-    return recordEvents()
+    return record_events()
 
 @app.route("/actions/play/<action_name>", methods=['GET'])
 def play(action_name):
-    playEvents('actions/{}.txt'.format(action_name),1)
+    play_events('actions/{}.txt'.format(action_name),1)
     return {"status": "finished"}
 
 @app.route("/actions/save/<action_name>", methods=['PATCH'])
@@ -43,6 +44,13 @@ def saveAction(action_name):
 def removeAction(action_name):
     os.remove("./actions/{}{}".format(action_name,".txt"))
     return {"status": "finished"}
+@app.route("/getKey")
+def getKey():
+     return get_next_key()
+
+@app.route("/getCord")
+def getCord():
+    return get_cord()
 
 @app.route("/actions")
 def getActions():

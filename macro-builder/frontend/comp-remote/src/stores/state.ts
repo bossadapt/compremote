@@ -8,9 +8,12 @@ import type {
 } from '@/helpers/sharedInterfaces'
 import isValidFilename from 'valid-filename'
 export const useStateStore = defineStore('state', () => {
+  const HOSTNAME_FOR_BACKEND = 'http://localhost:3334'
   const warningMessage: Ref<string | null> = ref(null)
   const actions: Ref<Action[]> = ref([])
   const isRecording: Ref<boolean> = ref(false)
+  const isWaitingForKey: Ref<boolean> = ref(false)
+  const isWaitingForCord: Ref<boolean> = ref(false)
   const isInitializing: Ref<boolean> = ref(true)
   const focusedAction: Ref<Action | null> = ref(null)
 
@@ -20,7 +23,7 @@ export const useStateStore = defineStore('state', () => {
     } else {
       isRecording.value = true
       try {
-        let response = await fetch('http://localhost:3334/record')
+        let response = await fetch(HOSTNAME_FOR_BACKEND + '/record')
         if (!response.ok) {
           createWarningMessage('failed to pull reach backend to record')
           throw new Error(`response status: ${response.status}`)
@@ -37,7 +40,7 @@ export const useStateStore = defineStore('state', () => {
   }
 
   async function syncActions() {
-    let response = await fetch('http://localhost:3334/actions')
+    let response = await fetch(HOSTNAME_FOR_BACKEND + '/actions')
     try {
       if (!response.ok) {
         createWarningMessage('failed to pull actions from backend')
@@ -72,7 +75,7 @@ export const useStateStore = defineStore('state', () => {
   }
 
   function removeAction(removedAction: Action) {
-    fetch('http://localhost:3334/actions/remove/' + removedAction.name, {
+    fetch(HOSTNAME_FOR_BACKEND + '/actions/remove/' + removedAction.name, {
       method: 'DELETE',
     })
     actions.value = actions.value.filter((curAction) => {
@@ -98,7 +101,7 @@ export const useStateStore = defineStore('state', () => {
   }
   function saveAction(action2save: Action) {
     //TODO: maybe run checks for valid input if you ask the user to press all the keys on thier keyboard on first boot
-    fetch('http://localhost:3334/actions/save/' + action2save.name, {
+    fetch(HOSTNAME_FOR_BACKEND + '/actions/save/' + action2save.name, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -110,7 +113,51 @@ export const useStateStore = defineStore('state', () => {
       }
     })
   }
-  //FOR specific focused action editing
+  ///gets a key from the user and sets the event idx keypressed event and swap the key with the one given
+  async function getKey(idx: number) {
+    isWaitingForKey.value = true
+    console.log('waiting for key')
+    try {
+      await fetch(HOSTNAME_FOR_BACKEND + '/getKey').then(async (req) => {
+        if (req.ok) {
+          let data = await req.json()
+          if (focusedAction.value?.events[idx].type === TypeEnum.KeyboardEvent) {
+            ;(focusedAction.value.events[idx] as MyKeyboardEvent).key = data.key
+          }
+        } else {
+          createWarningMessage('Failed to get key from backend')
+        }
+      })
+    } catch (error) {
+      console.log(error)
+      createWarningMessage('Failed to get key from backend')
+    }
+    console.log('got the key')
+    isWaitingForKey.value = false
+  }
+
+  async function getCord(idx: number) {
+    isWaitingForCord.value = true
+    console.log('waiting for cord')
+    try {
+      await fetch(HOSTNAME_FOR_BACKEND + '/getCord').then(async (req) => {
+        if (req.ok) {
+          let data = await req.json()
+          if (focusedAction.value?.events[idx]) {
+            ;(focusedAction.value.events[idx] as any).x = data.x
+            ;(focusedAction.value.events[idx] as any).y = data.y
+          }
+        } else {
+          createWarningMessage('Failed to get cord from backend')
+        }
+      })
+    } catch (error) {
+      console.log(error)
+      createWarningMessage('Failed to get cord from backend')
+    }
+    console.log('got the cord')
+    isWaitingForCord.value = false
+  }
 
   function addEvent(idx: number, type: TypeEnum) {
     let newEntry: EventUnion
@@ -122,7 +169,7 @@ export const useStateStore = defineStore('state', () => {
         newEntry = {
           type: TypeEnum.MouseButtonEvent,
           toggle: ToggleStatus.RELEASED,
-          button: 'button.Left',
+          button: 'Button.left',
           x: 0,
           y: 0,
         }
@@ -153,7 +200,7 @@ export const useStateStore = defineStore('state', () => {
     console.log('Play focused called')
     if (focusedAction.value != null) {
       console.log('focused was not null')
-      fetch('http://localhost:3334/actions/play/' + focusedAction.value.name).then((req) => {
+      fetch(HOSTNAME_FOR_BACKEND + '/actions/play/' + focusedAction.value.name).then((req) => {
         if (!req.ok) {
           createWarningMessage('Failed to play from backend')
         }
@@ -177,5 +224,9 @@ export const useStateStore = defineStore('state', () => {
     removeEvent,
     saveAction,
     playFocused,
+    getKey,
+    getCord,
+    isWaitingForCord,
+    isWaitingForKey,
   }
 })

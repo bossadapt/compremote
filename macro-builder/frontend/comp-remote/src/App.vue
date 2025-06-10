@@ -13,9 +13,17 @@ onMounted(() => {
   <div v-if="state.warningMessage !== null" class="warning-container">
     <h3 class="warning-text">Warning: {{ state.warningMessage }}</h3>
   </div>
-  <div v-if="state.isInitializing"></div>
+  <div v-if="state.isInitializing">
+    <h1 class="general-instructions">Initializing with backend</h1>
+  </div>
   <div v-else-if="state.isRecording">
-    <h1 class="recording-message">RECORDING IN PROCESS(Press Escape to Finish Recording)</h1>
+    <h1 class="general-instructions">RECORDING IN PROCESS(Press Escape to Finish Recording)</h1>
+  </div>
+    <div v-else-if="state.isWaitingForKey">
+    <h1 class="general-instructions">Waiting for key(Press any key to record to event)</h1>
+  </div>
+      <div v-else-if="state.isWaitingForCord">
+    <h1 class="general-instructions">Waiting for cord(press left mouse button to record position for event)</h1>
   </div>
   <div v-else class="main-container">
     <link href="https://fonts.googleapis.com/css?family=JetBrains Mono" rel="stylesheet" />
@@ -40,7 +48,7 @@ body {
   font-family: 'JetBrains Mono';
   background-color: var(--background);
 }
-.recording-message {
+.general-instructions {
   font-size: x-large;
   color: red;
   width: 100%;

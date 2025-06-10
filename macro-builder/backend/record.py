@@ -86,7 +86,7 @@ def on_scroll(x, y, dx, dy):
     storage.append((MouseScrollEvent(dx,dy,x,y),time.time()))
 
 # Collect events from keyboard and mouse until esc
-def recordEvents() -> List[EventUnion]:
+def record_events() -> List[EventUnion]:
     global storage
     global record_all
     global lastMoveTime

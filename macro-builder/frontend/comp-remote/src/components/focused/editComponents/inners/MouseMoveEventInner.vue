@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import type { MouseMoveEvent } from '@/helpers/sharedInterfaces';
+import Position from '../Position.vue';
 defineProps<{
   event: MouseMoveEvent
+  idx:number
 }>()
 </script>
 <template>
   <div class="inner">
-    <h3>x:</h3>
-    <input type="number" v-model="event.x">
-    <h3>y:</h3>
-    <input type="number" v-model="event.y">
+    <Position :x="event.x" :y="event.y" :idx="idx"></Position>
   </div>
 </template>
 <style scoped>

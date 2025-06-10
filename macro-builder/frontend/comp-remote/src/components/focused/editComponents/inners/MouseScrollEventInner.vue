@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { MouseScrollEvent } from '@/helpers/sharedInterfaces'
+import Position from '../Position.vue';
 defineProps<{
-  event: MouseScrollEvent
+  event: MouseScrollEvent,
+  idx:number
 }>()
 </script>
 <template>
@@ -10,10 +12,7 @@ defineProps<{
     <input type="number" v-model="event.vertical_direction" />
     <h3>Horizontal Direction:</h3>
     <input type="number" v-model="event.horizontal_direction" />
-    <h3>x:</h3>
-    <input type="number" v-model="event.x" />
-    <h3>y:</h3>
-    <input type="number" v-model="event.y" />
+    <Position :x="event.x" :y="event.y" :idx="idx"></Position>
   </div>
 </template>
 <style scoped>

@@ -15,7 +15,7 @@ let state = useStateStore()
         @click="state.playFocused()"
         style="background-color: var(--primary); color: var(--secondary)"
       >
-        Play
+        Play Saved Version
       </button>
       <button class="save-button" @click="state.saveAction(state.focusedAction)">Save</button>
     </div>

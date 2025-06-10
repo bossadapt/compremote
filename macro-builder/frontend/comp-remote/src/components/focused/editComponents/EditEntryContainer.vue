@@ -29,24 +29,28 @@ defineProps<{
       <KeyboardEventInner
         v-if="event.type === TypeEnum.KeyboardEvent"
         :event="event as KeyboardEvent"
+        :idx="idx"
       ></KeyboardEventInner>
       <MouseButtonEventInner
         v-if="event.type === TypeEnum.MouseButtonEvent"
         :event="event as MouseButtonEvent"
+        :idx="idx"
       ></MouseButtonEventInner>
       <MouseMoveEventInner
         v-if="event.type === TypeEnum.MouseMoveEvent"
         :event="event as MouseMoveEvent"
+        :idx="idx"
       ></MouseMoveEventInner>
       <MouseScrollEventInner
         v-if="event.type === TypeEnum.MouseScrollEvent"
         :event="event as MouseScrollEvent"
+        :idx="idx"
       ></MouseScrollEventInner>
       <WaitEventInner
         v-if="event.type === TypeEnum.WaitEvent"
         :event="event as WaitEvent"
       ></WaitEventInner>
-      <button @click="state.removeEvent(idx)">Remove</button>
+      <button @click="state.removeEvent(idx)" style="font-size: 20px;">Remove</button>
     </div>
     <AddEvent :idx="idx+1"></AddEvent>
   </div>

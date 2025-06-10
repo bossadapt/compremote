@@ -16,7 +16,18 @@ def get_next_key():
         listener.join()
 
     return key_pressed
-
+def get_next_button():
+    """Captures the next button pressed and returns it as {"button" : "button.left"}."""
+    global listener
+    button_pressed = {"button":"Button.left"}
+    def on_click(x, y, button, pressed):
+        global listener
+        if(pressed):
+            button_pressed["button"] = str(button)
+            listener.stop()
+    with mouse.Listener(on_click=on_click) as listener:
+        listener.join()
+    return button_pressed
 def get_cord():
     """Returns one {x:0,y:0} object after they click left-mouse."""
     global listener

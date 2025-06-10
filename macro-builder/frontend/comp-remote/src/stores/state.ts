@@ -11,9 +11,8 @@ export const useStateStore = defineStore('state', () => {
   const HOSTNAME_FOR_BACKEND = 'http://localhost:3334'
   const warningMessage: Ref<string | null> = ref(null)
   const actions: Ref<Action[]> = ref([])
-  const isRecording: Ref<boolean> = ref(false)
-  const isWaitingForKey: Ref<boolean> = ref(false)
-  const isWaitingForCord: Ref<boolean> = ref(false)
+  const isWaitingForInput: Ref<boolean> = ref(false)
+  const waitingForInputText: Ref<string> = ref('')
   const isInitializing: Ref<boolean> = ref(true)
   const focusedAction: Ref<Action | null> = ref(null)
 
@@ -21,7 +20,8 @@ export const useStateStore = defineStore('state', () => {
     if (!isValidFilename(name)) {
       createWarningMessage('unable to start, name attempted is an invalid filename(windows/linux)')
     } else {
-      isRecording.value = true
+      isWaitingForInput.value = true
+      waitingForInputText.value = 'RECORDING IN PROCESS(Press Escape to Finish Recording)'
       try {
         let response = await fetch(HOSTNAME_FOR_BACKEND + '/record')
         if (!response.ok) {
@@ -35,7 +35,7 @@ export const useStateStore = defineStore('state', () => {
         createWarningMessage('error deserializing record data')
         console.error(error)
       }
-      isRecording.value = false
+      isWaitingForInput.value = false
     }
   }
 
@@ -115,7 +115,8 @@ export const useStateStore = defineStore('state', () => {
   }
   ///gets a key from the user and sets the event idx keypressed event and swap the key with the one given
   async function getKey(idx: number) {
-    isWaitingForKey.value = true
+    waitingForInputText.value = 'Waiting for key(Press any key to record to event)'
+    isWaitingForInput.value = true
     console.log('waiting for key')
     try {
       await fetch(HOSTNAME_FOR_BACKEND + '/getKey').then(async (req) => {
@@ -133,11 +134,34 @@ export const useStateStore = defineStore('state', () => {
       createWarningMessage('Failed to get key from backend')
     }
     console.log('got the key')
-    isWaitingForKey.value = false
+    isWaitingForInput.value = false
   }
-
+  async function getButton(idx: number) {
+    isWaitingForInput.value = true
+    waitingForInputText.value =
+      'Waiting for mouse button event to attach to event(press mouse button needed)'
+    try {
+      await fetch(HOSTNAME_FOR_BACKEND + '/getButton').then(async (req) => {
+        if (req.ok) {
+          let data = await req.json()
+          if (focusedAction.value?.events[idx]) {
+            ;(focusedAction.value.events[idx] as any).button = data.button
+          }
+        } else {
+          createWarningMessage('Failed to get button from backend')
+        }
+      })
+    } catch (error) {
+      console.log(error)
+      createWarningMessage('Failed to get button from backend')
+    }
+    isWaitingForInput.value = false
+  }
   async function getCord(idx: number) {
-    isWaitingForCord.value = true
+    isWaitingForInput.value = true
+    waitingForInputText.value =
+      'Waiting for cord(press left mouse button to record position for event)'
+
     console.log('waiting for cord')
     try {
       await fetch(HOSTNAME_FOR_BACKEND + '/getCord').then(async (req) => {
@@ -156,7 +180,7 @@ export const useStateStore = defineStore('state', () => {
       createWarningMessage('Failed to get cord from backend')
     }
     console.log('got the cord')
-    isWaitingForCord.value = false
+    isWaitingForInput.value = false
   }
 
   function addEvent(idx: number, type: TypeEnum) {
@@ -211,7 +235,8 @@ export const useStateStore = defineStore('state', () => {
   }
   return {
     actions,
-    isRecording,
+    isWaitingForInput,
+    waitingForInputText,
     isInitializing,
     focusedAction,
     warningMessage,
@@ -226,7 +251,6 @@ export const useStateStore = defineStore('state', () => {
     playFocused,
     getKey,
     getCord,
-    isWaitingForCord,
-    isWaitingForKey,
+    getButton,
   }
 })

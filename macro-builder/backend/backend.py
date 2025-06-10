@@ -7,7 +7,7 @@ import webbrowser
 import time
 import json
 import os
-from helpers import get_next_key, get_cord
+from singles import get_next_key, get_cord, get_next_button
 try:
     actionFile = open("./actions.txt","r")
     actionFile.close()
@@ -51,7 +51,9 @@ def getKey():
 @app.route("/getCord")
 def getCord():
     return get_cord()
-
+@app.route("/getButton")
+def getButton():
+     return get_next_button()
 @app.route("/actions")
 def getActions():
     dirList = os.listdir("./actions")

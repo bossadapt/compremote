@@ -2,6 +2,8 @@
 import { ToggleStatus } from '@/helpers/sharedInterfaces'
 import type { MouseButtonEvent } from '@/helpers/sharedInterfaces';
 import Position from '../Position.vue';
+import { useStateStore } from '@/stores/state';
+const state = useStateStore()
 defineProps<{
   event: MouseButtonEvent
   idx:number
@@ -16,7 +18,7 @@ defineProps<{
   </select>
     
     <h3>button:</h3>
-    <input type="text" v-model="event.button">
+    <button @click="state.getButton(idx)">{{ event.button }}</button>
     <Position :x="event.x" :y="event.y" :idx="idx"></Position>
   </div>
 </template>

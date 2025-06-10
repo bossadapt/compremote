@@ -16,14 +16,8 @@ onMounted(() => {
   <div v-if="state.isInitializing">
     <h1 class="general-instructions">Initializing with backend</h1>
   </div>
-  <div v-else-if="state.isRecording">
-    <h1 class="general-instructions">RECORDING IN PROCESS(Press Escape to Finish Recording)</h1>
-  </div>
-    <div v-else-if="state.isWaitingForKey">
-    <h1 class="general-instructions">Waiting for key(Press any key to record to event)</h1>
-  </div>
-      <div v-else-if="state.isWaitingForCord">
-    <h1 class="general-instructions">Waiting for cord(press left mouse button to record position for event)</h1>
+  <div v-else-if="state.isWaitingForInput">
+    <h1 class="general-instructions">{{ state.waitingForInputText }}</h1>
   </div>
   <div v-else class="main-container">
     <link href="https://fonts.googleapis.com/css?family=JetBrains Mono" rel="stylesheet" />

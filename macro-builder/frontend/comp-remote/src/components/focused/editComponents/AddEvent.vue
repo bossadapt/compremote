@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { TypeEnum } from '@/helpers/sharedInterfaces'
 import { useStateStore } from '@/stores/state'
-let typeToAddAfter: TypeEnum = TypeEnum.WaitEvent
+import { ref } from 'vue';
 let state = useStateStore()
-defineProps<{
+let props = defineProps<{
   idx: number
+  typeParam: TypeEnum
 }>()
+let typeToAddAfter = ref(props.typeParam)
 </script>
 <template>
   <div style="display: flex; flex-direction: row">
@@ -37,5 +39,6 @@ defineProps<{
   color: var(--accent);
   border: 1px;
   border-style: inset;
+  cursor: pointer;
 }
 </style>

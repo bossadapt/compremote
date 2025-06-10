@@ -12,18 +12,21 @@ export enum TypeEnum {
 }
 
 export interface KeyboardEvent {
+  id: string
   type: TypeEnum
   toggle: ToggleStatus
   key: string
 }
 
 export interface MouseMoveEvent {
+  id: string
   type: TypeEnum
   x: number
   y: number
 }
 
 export interface MouseButtonEvent {
+  id: string
   type: TypeEnum
   toggle: ToggleStatus
   button: string
@@ -31,6 +34,7 @@ export interface MouseButtonEvent {
   y: number
 }
 export interface MouseScrollEvent {
+  id: string
   type: TypeEnum
   vertical_direction: number
   horizontal_direction: number
@@ -39,6 +43,7 @@ export interface MouseScrollEvent {
 }
 
 export interface WaitEvent {
+  id: string
   type: TypeEnum
   time: number
 }

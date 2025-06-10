@@ -25,7 +25,7 @@ defineProps<{
 <template>
   <div class="main">
     <div class="main-edit-container">
-      <!-- TODO: add handle button https://sagalbot.github.io/vue-sortable/ -->
+      <i class="handle">☰</i>
       <KeyboardEventInner
         v-if="event.type === TypeEnum.KeyboardEvent"
         :event="event as KeyboardEvent"
@@ -50,12 +50,29 @@ defineProps<{
         v-if="event.type === TypeEnum.WaitEvent"
         :event="event as WaitEvent"
       ></WaitEventInner>
-      <button @click="state.removeEvent(idx)" style="font-size: 20px;">Remove</button>
+      <button @click="state.removeEvent(idx)" class="remove"> ❌</button>
     </div>
     <AddEvent :idx="idx+1"></AddEvent>
   </div>
 </template>
 <style scoped>
+.handle {
+  font-family: 'Segoe UI Symbol', 'Arial', 'sans-serif', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'monospace';
+  margin-right: auto;
+  cursor: grab;
+  user-select: none;
+  color: white;
+  font-size: 40px;
+
+}
+.remove{
+  font-size: 40px;
+  margin-left: auto;
+  background-color: var(--secondary);
+  border: 0px;
+  color: var(--danger);
+  cursor: pointer;
+}
 .main {
   display: flex;
   flex-direction: column;
@@ -66,7 +83,7 @@ defineProps<{
   margin-top: 1%;
 }
 .main-edit-container {
-  width: 100%;
+  width: 96%;
   display: flex;
   flex-direction: row;
   margin-left: 2%;
@@ -74,5 +91,7 @@ defineProps<{
   margin-top: 0.5%;
   margin-bottom: 0.5%;
   justify-content: center;
+    align-items: center;
+
 }
 </style>

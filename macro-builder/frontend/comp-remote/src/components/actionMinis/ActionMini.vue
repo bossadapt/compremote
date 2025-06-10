@@ -20,7 +20,7 @@ defineProps<{
         <h3 class="title-h3">{{ action.name }}</h3>
       </div>
       <div class="delete-button" @click="state.removeAction(action)">
-        <h3 class="delete-text">Delete</h3>
+        <h3 class="delete-text">❌</h3>
       </div>
     </div>
   </div>
@@ -30,7 +30,7 @@ defineProps<{
         <h3 class="title-h3">{{ action.name }}</h3>
       </div>
       <div class="delete-button" @click="state.removeAction(action)">
-        <h3 class="delete-text">Delete</h3>
+        <h3 class="delete-text">❌</h3>
       </div>
     </div>
   </div>

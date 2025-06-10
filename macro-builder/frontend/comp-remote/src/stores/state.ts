@@ -185,12 +185,19 @@ export const useStateStore = defineStore('state', () => {
 
   function addEvent(idx: number, type: TypeEnum) {
     let newEntry: EventUnion
+    let id = 'id' + Math.random().toString(16).slice(2)
     switch (type) {
       case TypeEnum.KeyboardEvent:
-        newEntry = { type: TypeEnum.KeyboardEvent, toggle: ToggleStatus.PRESSED, key: 'Key.space' }
+        newEntry = {
+          id,
+          type: TypeEnum.KeyboardEvent,
+          toggle: ToggleStatus.PRESSED,
+          key: 'Key.space',
+        }
         break
       case TypeEnum.MouseButtonEvent:
         newEntry = {
+          id,
           type: TypeEnum.MouseButtonEvent,
           toggle: ToggleStatus.RELEASED,
           button: 'Button.left',
@@ -199,10 +206,11 @@ export const useStateStore = defineStore('state', () => {
         }
         break
       case TypeEnum.MouseMoveEvent:
-        newEntry = { type: TypeEnum.MouseMoveEvent, x: 0, y: 0 }
+        newEntry = { id, type: TypeEnum.MouseMoveEvent, x: 0, y: 0 }
         break
       case TypeEnum.MouseScrollEvent:
         newEntry = {
+          id,
           type: TypeEnum.MouseScrollEvent,
           vertical_direction: 0,
           horizontal_direction: 0,
@@ -212,7 +220,7 @@ export const useStateStore = defineStore('state', () => {
         break
 
       case TypeEnum.WaitEvent:
-        newEntry = { type: TypeEnum.WaitEvent, time: 0 }
+        newEntry = { id, type: TypeEnum.WaitEvent, time: 0 }
         break
     }
     focusedAction.value?.events.splice(idx, 0, newEntry)

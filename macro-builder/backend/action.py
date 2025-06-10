@@ -1,7 +1,10 @@
 from typing import Union, List
 from enum import Enum
 from dataclasses import dataclass, field
+import random
 
+def generateId():
+    return "id" + hex(random.getrandbits(52))[2:]
 class ToggleStatus(int, Enum):
     PRESSED = 0
     RELEASED = 1
@@ -16,20 +19,26 @@ class TypeEnum(int, Enum):
 class KeyboardEvent():
     toggle:ToggleStatus
     key:str
+    id:str
     type:int = field(default=TypeEnum.KeyboardEvent)
     def __init__(self,toggle,key):
         self.toggle = toggle
         self.key = key
+        self.id = generateId()
 
 @dataclass
 class MouseMoveEvent():
     x: int
     y: int
+    id:str
+    id:str
     type:int = field(default=TypeEnum.MouseMoveEvent)
 
     def __init__(self,x,y):
         self.x = x
         self.y = y
+        self.id = generateId()
+
 
 @dataclass
 class MouseButtonEvent():
@@ -37,6 +46,7 @@ class MouseButtonEvent():
     button: str
     x: int
     y: int
+    id:str
     type:int = field(default=TypeEnum.MouseButtonEvent)
 
     def __init__(self,toggle,button,x,y):
@@ -44,6 +54,7 @@ class MouseButtonEvent():
         self.toggle = toggle
         self.x = x
         self.y = y
+        self.id = generateId()
 
 @dataclass
 class MouseScrollEvent():
@@ -51,6 +62,7 @@ class MouseScrollEvent():
     horizontal_direction: int
     x: int
     y: int
+    id:str
     type:int = field(default=TypeEnum.MouseScrollEvent)
 
     def __init__(self,vertical_direction,horizontal_direction,x,y):
@@ -58,14 +70,18 @@ class MouseScrollEvent():
         self.horizontal_direction = horizontal_direction
         self.x = x
         self.y = y
+        self.id = generateId()
 
 @dataclass
 class WaitEvent():
     time:float
+    id:str
+
     type : int = field(default=TypeEnum.WaitEvent)
 
     def __init__(self,time):
         self.time = time
+        self.id = generateId()
 EventUnion = Union[KeyboardEvent, MouseMoveEvent,MouseButtonEvent,MouseScrollEvent, WaitEvent]
 
 @dataclass 

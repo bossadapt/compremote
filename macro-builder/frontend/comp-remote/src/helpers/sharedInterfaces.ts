@@ -11,6 +11,15 @@ export enum TypeEnum {
   WaitEvent = 4,
   TextEvent = 5,
   BrowserEvent = 6,
+  ClickEvent = 7,
+}
+export interface ClickEvent {
+  id: string
+  button: string
+  x: number
+  y: number
+  clickCount: number
+  type: TypeEnum
 }
 export interface TextEvent {
   text: string
@@ -60,6 +69,7 @@ export interface WaitEvent {
   type: TypeEnum
   time: number
 }
+
 export type EventUnion =
   | KeyEvent
   | MouseButtonEvent
@@ -68,6 +78,8 @@ export type EventUnion =
   | WaitEvent
   | BrowserEvent
   | TextEvent
+  | ClickEvent
+
 export interface Action {
   name: string
   events: EventUnion[]

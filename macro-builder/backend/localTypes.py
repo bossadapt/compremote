@@ -10,7 +10,7 @@ class ToggleStatus(int, Enum):
     RELEASED = 1
 
 
-#because i assume comparing 1 == 1 is easier then "there  it is" == "there is is"
+#TODO: a clone feature(to copy existing events)
 class TypeEnum(int, Enum):
     KeyEvent = 0
     MouseMoveEvent = 1
@@ -18,8 +18,22 @@ class TypeEnum(int, Enum):
     MouseScrollEvent = 3
     WaitEvent = 4
     TextEvent = 5
-    BrowserEvent = 6 
-
+    BrowserEvent = 6
+    ClickEvent = 7 
+@dataclass
+class ClickEvent():
+    id:str
+    button:str
+    x:int
+    y:int
+    clickCount:int
+    type:int = field(default=TypeEnum.ClickEvent)    
+    def __init__(self,button,x,y,clickCount):
+        self.button = button
+        self.x = x
+        self.y = y
+        self.clickCount = clickCount
+        self.id = generateId()
 @dataclass
 class TextEvent():
     text:str

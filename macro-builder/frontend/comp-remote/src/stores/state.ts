@@ -96,7 +96,6 @@ export const useStateStore = defineStore('state', () => {
     return new Promise((resolve) => setTimeout(resolve, ms))
   }
   function saveAction(action2save: Action) {
-    //TODO: maybe run checks for valid input if you ask the user to press all the keys on thier keyboard on first boot
     fetch(HOSTNAME_FOR_BACKEND + '/actions/save/' + action2save.name, {
       method: 'PATCH',
       headers: {
@@ -227,6 +226,16 @@ export const useStateStore = defineStore('state', () => {
           type: TypeEnum.BrowserEvent,
           newWindow: false,
           url: 'https://google.com',
+        }
+        break
+      case TypeEnum.ClickEvent:
+        newEntry = {
+          id,
+          type: TypeEnum.ClickEvent,
+          button: 'Button.left',
+          x: 0,
+          y: 0,
+          clickCount: 1,
         }
         break
       case TypeEnum.WaitEvent:

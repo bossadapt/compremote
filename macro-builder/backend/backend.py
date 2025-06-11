@@ -3,11 +3,12 @@ from flask import Flask, request
 from flask_cors import CORS
 from record import record_events
 from play import play_events
-import webbrowser
 import time
 import json
 import os
 from singles import get_next_key, get_cord, get_next_button
+#TODO: make this generate the actions folder
+#TODO: also make it generate a master.key folder that will act as authentication(or a real auth system)
 try:
     actionFile = open("./actions.txt","r")
     actionFile.close()
@@ -19,7 +20,6 @@ actions = []
 app = Flask(__name__)
 CORS(app)
 #for testing
-#webbrowser.open("127.0.0.1:3334")
 @app.route("/")
 def helloWorld():
     return {"status": "healthy"}

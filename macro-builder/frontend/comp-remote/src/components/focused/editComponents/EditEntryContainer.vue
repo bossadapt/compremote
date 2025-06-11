@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { TypeEnum } from '../../../helpers/sharedInterfaces'
 import type {
   BrowserEvent,
+  ClickEvent,
   EventUnion,
   KeyEvent,
   MouseButtonEvent,
@@ -20,6 +21,7 @@ import { useStateStore } from '@/stores/state'
 import AddEvent from './AddEvent.vue'
 import BrowserEventInner from './inners/BrowserEventInner.vue'
 import TextEventInner from './inners/TextEventInner.vue'
+import ClickEventInner from './inners/ClickEventInner.vue'
 const state = useStateStore()
 defineProps<{
   event: EventUnion
@@ -63,6 +65,11 @@ defineProps<{
           v-else-if="event.type === TypeEnum.TextEvent"
           :event="event as TextEvent"
         ></TextEventInner>
+                <ClickEventInner
+          v-else-if="event.type === TypeEnum.ClickEvent"
+          :event="event as ClickEvent"
+          :idx="idx"
+        ></ClickEventInner>
       </div>
 
       <button @click="state.removeEvent(idx)" class="remove">❌</button>

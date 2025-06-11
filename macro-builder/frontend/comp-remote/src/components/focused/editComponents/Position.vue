@@ -9,6 +9,8 @@ defineProps<{
 }>()
 </script>
 <template>
-  <button @click="state.getCord(idx)">X: {{ x }} | Y:{{ y }}</button>
+  <div class="section">
+    <button @click="state.getCord(idx)">X: {{ x }} | Y:{{ y }}</button>
+  </div>
 </template>
 <style></style>

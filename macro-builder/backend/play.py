@@ -7,7 +7,7 @@ import time
 import json
 import sys
 import webbrowser
-from action import EventUnion, TypeEnum, ToggleStatus
+from localTypes import EventUnion, TypeEnum, ToggleStatus
 
 def play_events(name_of_recording,number_of_plays):
     with open(name_of_recording) as json_file:
@@ -37,7 +37,7 @@ def play_events(name_of_recording,number_of_plays):
                 if obj["newWindow"]:
                     webbrowser.open_new(obj["url"])
                 else:
-                    webbrowser.open_new_tab(obj["url"])
+                    webbrowser.open_new_tab(obj["url"])                
             else:
                 print("x: {0}, y: {1}, action: {2}".format(obj["x"], obj["y"], obj["type"]))
                 mouse.position = (obj["x"], obj["y"])
@@ -49,6 +49,8 @@ def play_events(name_of_recording,number_of_plays):
                         mouse.press(buttons[obj["button"]])
                     else:
                         mouse.release(buttons[obj["button"]])
+                elif obj["type"] == TypeEnum.ClickEvent:
+                    mouse.click(buttons[obj["button"]],obj["clickCount"])
                 elif obj["type"] == TypeEnum.MouseScrollEvent:
                     horizontal_direction, vertical_direction = obj["horizontal_direction"], obj["vertical_direction"]
                     mouse.scroll(horizontal_direction, vertical_direction)

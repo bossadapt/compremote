@@ -7,7 +7,7 @@ import sys
 from pynput.mouse import Controller
 #import threading
 from typing import Union, List, Tuple
-from action import KeyEvent,MouseButtonEvent,WaitEvent, MouseMoveEvent ,MouseScrollEvent, ToggleStatus, EventUnion
+from localTypes import KeyEvent,MouseButtonEvent,WaitEvent, MouseMoveEvent ,MouseScrollEvent, ToggleStatus, EventUnion
 EventWithTime = Tuple[Union[KeyEvent, MouseButtonEvent,MouseScrollEvent],float]
 storage:List[EventWithTime] = []
 record_all = False

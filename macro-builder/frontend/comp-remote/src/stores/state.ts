@@ -1,7 +1,18 @@
 import { ref, type Ref } from 'vue'
 import { defineStore } from 'pinia'
-import { ToggleStatus, TypeEnum } from '@/helpers/sharedInterfaces'
-import type { Action, EventUnion, KeyEvent as MyKeyEvent } from '@/helpers/sharedInterfaces'
+import {
+  ToggleStatus,
+  TypeEnum,
+  KeyEvent,
+  MouseButtonEvent,
+  MouseMoveEvent,
+  MouseScrollEvent,
+  TextEvent,
+  BrowserEvent,
+  ClickEvent,
+  WaitEvent,
+} from '@/helpers/sharedInterfaces'
+import type { Action, EventUnion } from '@/helpers/sharedInterfaces'
 import isValidFilename from 'valid-filename'
 export const useStateStore = defineStore('state', () => {
   const HOSTNAME_FOR_BACKEND = 'http://localhost:3334'
@@ -35,9 +46,9 @@ export const useStateStore = defineStore('state', () => {
     }
   }
 
-  async function syncActions() {
-    let response = await fetch(HOSTNAME_FOR_BACKEND + '/actions')
+  async function syncActions(count: number) {
     try {
+      let response = await fetch(HOSTNAME_FOR_BACKEND + '/actions')
       if (!response.ok) {
         createWarningMessage('failed to pull actions from backend')
         throw new Error(`response status: ${response.status}`)
@@ -45,7 +56,11 @@ export const useStateStore = defineStore('state', () => {
       const json: Action[] = await response.json()
       actions.value = json
     } catch (error) {
-      createWarningMessage('error deserializing data')
+      createWarningMessage(
+        'failed to grab initial state from backend(' + count + '), Trying again in 1 sec',
+      )
+      sleep(1000)
+      syncActions(count++)
       console.error(error)
     }
     isInitializing.value = false
@@ -118,7 +133,7 @@ export const useStateStore = defineStore('state', () => {
         if (req.ok) {
           let data = await req.json()
           if (focusedAction.value?.events[idx].type === TypeEnum.KeyEvent) {
-            ;(focusedAction.value.events[idx] as MyKeyEvent).key = data.key
+            ;(focusedAction.value.events[idx] as KeyEvent).key = data.key
           }
         } else {
           createWarningMessage('Failed to get key from backend')
@@ -180,67 +195,42 @@ export const useStateStore = defineStore('state', () => {
 
   function addEvent(idx: number, type: TypeEnum) {
     let newEntry: EventUnion
-    let id = 'id' + Math.random().toString(16).slice(2)
+    let generatedId = 'id' + Math.random().toString(16).slice(2)
     switch (type) {
       case TypeEnum.KeyEvent:
-        newEntry = {
-          id,
-          type: TypeEnum.KeyEvent,
-          toggle: ToggleStatus.PRESSED,
-          key: 'Key.space',
-        }
+        newEntry = new KeyEvent(generatedId)
         break
       case TypeEnum.MouseButtonEvent:
-        newEntry = {
-          id,
-          type: TypeEnum.MouseButtonEvent,
-          toggle: ToggleStatus.RELEASED,
-          button: 'Button.left',
-          x: 0,
-          y: 0,
-        }
+        newEntry = new MouseButtonEvent(generatedId)
         break
       case TypeEnum.MouseMoveEvent:
-        newEntry = { id, type: TypeEnum.MouseMoveEvent, x: 0, y: 0 }
+        newEntry = new MouseMoveEvent(generatedId)
         break
       case TypeEnum.MouseScrollEvent:
-        newEntry = {
-          id,
-          type: TypeEnum.MouseScrollEvent,
-          vertical_direction: 0,
-          horizontal_direction: 0,
-          x: 0,
-          y: 0,
-        }
+        newEntry = new MouseScrollEvent(generatedId)
         break
       case TypeEnum.TextEvent:
-        newEntry = {
-          id,
-          type: TypeEnum.TextEvent,
-          text: '',
-        }
+        newEntry = new TextEvent(generatedId)
         break
       case TypeEnum.BrowserEvent:
-        newEntry = {
-          id,
-          type: TypeEnum.BrowserEvent,
-          newWindow: false,
-          url: 'https://google.com',
-        }
+        newEntry = new BrowserEvent(generatedId)
         break
       case TypeEnum.ClickEvent:
-        newEntry = {
-          id,
-          type: TypeEnum.ClickEvent,
-          button: 'Button.left',
-          x: 0,
-          y: 0,
-          clickCount: 1,
-        }
+        newEntry = new ClickEvent(generatedId)
         break
       case TypeEnum.WaitEvent:
-        newEntry = { id, type: TypeEnum.WaitEvent, time: 0 }
+        newEntry = new WaitEvent(generatedId)
         break
+      case TypeEnum.Clone:
+        const prev = focusedAction.value?.events[idx - 1]
+        if (prev != undefined) {
+          let temp: EventUnion = { ...prev }
+          temp.id = generatedId
+          newEntry = temp
+        } else {
+          createWarningMessage('cannot create clone off of nothing')
+          return
+        }
     }
     focusedAction.value?.events.splice(idx, 0, newEntry)
   }

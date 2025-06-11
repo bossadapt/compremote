@@ -1,19 +1,2 @@
 run:
-    #!/usr/bin/env bash
-    set -euo pipefail
-
-    echo "Starting backend..."
-    (cd backend && just run) &
-    backend_pid=$!
-
-    echo "Starting frontend..."
-    (cd frontend/comp-remote && npm run dev) &
-    frontend_pid=$!
-
-    echo "Opening browser..."
-    firefox http://localhost:5173 &
-
-    trap 'echo "Killing backend and frontend..."; kill $backend_pid $frontend_pid' INT TERM
-
-    echo "Waiting for servers..."
-    wait $backend_pid $frontend_pid
+    cd backend && just run

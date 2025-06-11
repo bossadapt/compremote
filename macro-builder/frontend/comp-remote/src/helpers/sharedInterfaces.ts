@@ -12,64 +12,120 @@ export enum TypeEnum {
   TextEvent = 5,
   BrowserEvent = 6,
   ClickEvent = 7,
+  //Is only ever used for making other events and does not exist in the backend
+  Clone = 8,
 }
-export interface ClickEvent {
+export class KeyEvent {
   id: string
-  button: string
-  x: number
-  y: number
-  clickCount: number
-  type: TypeEnum
-}
-export interface TextEvent {
-  text: string
-  id: string
-  type: TypeEnum
+  type: TypeEnum = TypeEnum.KeyEvent
+  toggle: ToggleStatus = ToggleStatus.PRESSED
+  key: string = 'Key.space'
+
+  constructor(id: string, key?: string, toggle?: ToggleStatus) {
+    this.id = id
+    if (key !== undefined) this.key = key
+    if (toggle !== undefined) this.toggle = toggle
+  }
 }
 
-export interface BrowserEvent {
-  newWindow: boolean
-  url: string
+export class MouseButtonEvent {
   id: string
-  type: TypeEnum
-}
-export interface KeyEvent {
-  id: string
-  type: TypeEnum
-  toggle: ToggleStatus
-  key: string
+  type: TypeEnum = TypeEnum.MouseButtonEvent
+  toggle: ToggleStatus = ToggleStatus.RELEASED
+  button: string = 'Button.left'
+  x: number = 0
+  y: number = 0
+
+  constructor(id: string, button?: string, toggle?: ToggleStatus, x?: number, y?: number) {
+    this.id = id
+    if (button !== undefined) this.button = button
+    if (toggle !== undefined) this.toggle = toggle
+    if (x !== undefined) this.x = x
+    if (y !== undefined) this.y = y
+  }
 }
 
-export interface MouseMoveEvent {
+export class MouseMoveEvent {
   id: string
-  type: TypeEnum
-  x: number
-  y: number
+  type: TypeEnum = TypeEnum.MouseMoveEvent
+  x: number = 0
+  y: number = 0
+
+  constructor(id: string, x?: number, y?: number) {
+    this.id = id
+    if (x !== undefined) this.x = x
+    if (y !== undefined) this.y = y
+  }
 }
 
-export interface MouseButtonEvent {
+export class MouseScrollEvent {
   id: string
-  type: TypeEnum
-  toggle: ToggleStatus
-  button: string
-  x: number
-  y: number
-}
-export interface MouseScrollEvent {
-  id: string
-  type: TypeEnum
-  vertical_direction: number
-  horizontal_direction: number
-  x: number
-  y: number
+  type: TypeEnum = TypeEnum.MouseScrollEvent
+  vertical_direction: number = 0
+  horizontal_direction: number = 0
+  x: number = 0
+  y: number = 0
+
+  constructor(id: string, vDir?: number, hDir?: number, x?: number, y?: number) {
+    this.id = id
+    if (vDir !== undefined) this.vertical_direction = vDir
+    if (hDir !== undefined) this.horizontal_direction = hDir
+    if (x !== undefined) this.x = x
+    if (y !== undefined) this.y = y
+  }
 }
 
-export interface WaitEvent {
+export class TextEvent {
   id: string
-  type: TypeEnum
-  time: number
+  type: TypeEnum = TypeEnum.TextEvent
+  text: string = ''
+
+  constructor(id: string, text?: string) {
+    this.id = id
+    if (text !== undefined) this.text = text
+  }
 }
 
+export class BrowserEvent {
+  id: string
+  type: TypeEnum = TypeEnum.BrowserEvent
+  newWindow: boolean = false
+  url: string = 'https://google.com'
+
+  constructor(id: string, url?: string, newWindow?: boolean) {
+    this.id = id
+    if (url !== undefined) this.url = url
+    if (newWindow !== undefined) this.newWindow = newWindow
+  }
+}
+
+export class ClickEvent {
+  id: string
+  type: TypeEnum = TypeEnum.ClickEvent
+  button: string = 'Button.left'
+  x: number = 0
+  y: number = 0
+  clickCount: number = 1
+
+  constructor(id: string, button?: string, x?: number, y?: number, clickCount?: number) {
+    this.id = id
+    if (button !== undefined) this.button = button
+    if (x !== undefined) this.x = x
+    if (y !== undefined) this.y = y
+    if (clickCount !== undefined) this.clickCount = clickCount
+  }
+}
+
+export class WaitEvent {
+  id: string
+  type: TypeEnum = TypeEnum.WaitEvent
+  time: number = 0
+
+  constructor(id: string, time?: number) {
+    this.id = id
+    if (time !== undefined) this.time = time
+  }
+}
 export type EventUnion =
   | KeyEvent
   | MouseButtonEvent

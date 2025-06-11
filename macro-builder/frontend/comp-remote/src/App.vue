@@ -5,7 +5,7 @@ import FocusedActions from './components/focused/FocusedAction.vue'
 import { useStateStore } from './stores/state'
 const state = useStateStore()
 onMounted(() => {
-  state.syncActions()
+  state.syncActions(1)
 })
 </script>
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { TypeEnum } from '@/helpers/sharedInterfaces'
 import { useStateStore } from '@/stores/state'
-import { ref } from 'vue';
+import { ref } from 'vue'
 let state = useStateStore()
 let props = defineProps<{
   idx: number
@@ -12,15 +12,15 @@ let typeToAddAfter = ref(props.typeParam)
 <template>
   <div style="display: flex; flex-direction: row">
     <select v-model="typeToAddAfter" class="main-add-select">
-      <option :value="TypeEnum.KeyboardEvent">Keyboard Event</option>
+      <option :value="TypeEnum.KeyEvent">Key Event</option>
       <option :value="TypeEnum.MouseButtonEvent">Mouse Button Event</option>
       <option :value="TypeEnum.MouseMoveEvent">Mouse Move Event</option>
       <option :value="TypeEnum.MouseScrollEvent">Mouse Scroll Event</option>
       <option :value="TypeEnum.WaitEvent">Wait Event</option>
+      <option :value="TypeEnum.BrowserEvent">Browser Event</option>
+      <option :value="TypeEnum.TextEvent">Text Event</option>
     </select>
-    <button class="main-add-button" @click="state.addEvent(idx, typeToAddAfter)">
-      ADD AFTER
-    </button>
+    <button class="main-add-button" @click="state.addEvent(idx, typeToAddAfter)">ADD AFTER</button>
   </div>
 </template>
 <style scoped>

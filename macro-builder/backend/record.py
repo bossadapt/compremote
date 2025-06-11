@@ -7,8 +7,8 @@ import sys
 from pynput.mouse import Controller
 #import threading
 from typing import Union, List, Tuple
-from action import KeyboardEvent,MouseButtonEvent,WaitEvent, MouseMoveEvent ,MouseScrollEvent, ToggleStatus, EventUnion
-EventWithTime = Tuple[Union[KeyboardEvent, MouseButtonEvent,MouseScrollEvent],float]
+from action import KeyEvent,MouseButtonEvent,WaitEvent, MouseMoveEvent ,MouseScrollEvent, ToggleStatus, EventUnion
+EventWithTime = Tuple[Union[KeyEvent, MouseButtonEvent,MouseScrollEvent],float]
 storage:List[EventWithTime] = []
 record_all = False
 lastMoveTime:int = 0
@@ -34,19 +34,19 @@ def combine_waits_and_events() -> List[EventUnion]:
 def on_press(key):
     global k_listener, m_listener
     try:
-        storage.append((KeyboardEvent(ToggleStatus.PRESSED,key.char),time.time()))
+        storage.append((KeyEvent(ToggleStatus.PRESSED,key.char),time.time()))
     except AttributeError:
         if key == keyboard.Key.esc:
             k_listener.stop()
             m_listener.stop()
             return False
-        storage.append((KeyboardEvent(ToggleStatus.PRESSED,str(key)),time.time()))
+        storage.append((KeyEvent(ToggleStatus.PRESSED,str(key)),time.time()))
 
 def on_release(key):
     try:
-        storage.append((KeyboardEvent(ToggleStatus.RELEASED,key.char),time.time()))
+        storage.append((KeyEvent(ToggleStatus.RELEASED,key.char),time.time()))
     except AttributeError:
-        storage.append((KeyboardEvent(ToggleStatus.RELEASED,str(key)),time.time()))        
+        storage.append((KeyEvent(ToggleStatus.RELEASED,str(key)),time.time()))        
 
 def on_move(x, y):
     global lastMoveTime
@@ -83,7 +83,7 @@ def on_click(x, y, button, pressed):
 
 
 def on_scroll(x, y, dx, dy):
-    storage.append((MouseScrollEvent(dx,dy,x,y),time.time()))
+    storage.append((MouseScrollEvent(dy,dx,x,y),time.time()))
 
 # Collect events from keyboard and mouse until esc
 def record_events() -> List[EventUnion]:

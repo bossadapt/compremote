@@ -4,14 +4,27 @@ export enum ToggleStatus {
 }
 
 export enum TypeEnum {
-  KeyboardEvent = 0,
+  KeyEvent = 0,
   MouseMoveEvent = 1,
   MouseButtonEvent = 2,
   MouseScrollEvent = 3,
   WaitEvent = 4,
+  TextEvent = 5,
+  BrowserEvent = 6,
+}
+export interface TextEvent {
+  text: string
+  id: string
+  type: TypeEnum
 }
 
-export interface KeyboardEvent {
+export interface BrowserEvent {
+  newWindow: boolean
+  url: string
+  id: string
+  type: TypeEnum
+}
+export interface KeyEvent {
   id: string
   type: TypeEnum
   toggle: ToggleStatus
@@ -48,11 +61,13 @@ export interface WaitEvent {
   time: number
 }
 export type EventUnion =
-  | KeyboardEvent
+  | KeyEvent
   | MouseButtonEvent
   | MouseMoveEvent
   | MouseScrollEvent
   | WaitEvent
+  | BrowserEvent
+  | TextEvent
 export interface Action {
   name: string
   events: EventUnion[]

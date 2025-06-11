@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ToggleStatus } from '@/helpers/sharedInterfaces'
-import type { KeyboardEvent } from '@/helpers/sharedInterfaces'
+import type { KeyEvent } from '@/helpers/sharedInterfaces'
 import { useStateStore } from '@/stores/state'
 let state = useStateStore()
 defineProps<{
-  event: KeyboardEvent
+  event: KeyEvent
   idx: number
 }>()
 </script>

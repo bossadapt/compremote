@@ -8,19 +8,43 @@ def generateId():
 class ToggleStatus(int, Enum):
     PRESSED = 0
     RELEASED = 1
+
+
 #because i assume comparing 1 == 1 is easier then "there  it is" == "there is is"
 class TypeEnum(int, Enum):
-    KeyboardEvent = 0
+    KeyEvent = 0
     MouseMoveEvent = 1
     MouseButtonEvent = 2
     MouseScrollEvent = 3
     WaitEvent = 4
+    TextEvent = 5
+    BrowserEvent = 6 
+
 @dataclass
-class KeyboardEvent():
+class TextEvent():
+    text:str
+    id:str
+    type:int = field(default=TypeEnum.TextEvent)    
+    def __init__(self,text):
+        self.text = text
+        self.id = generateId()
+
+@dataclass
+class BrowserEvent():
+    newWindow:bool
+    url:str
+    id:str
+    type:int = field(default=TypeEnum.BrowserEvent)
+    def __init__(self,browserType,url):
+        self.browserType = browserType
+        self.url = url
+
+@dataclass
+class KeyEvent():
     toggle:ToggleStatus
     key:str
     id:str
-    type:int = field(default=TypeEnum.KeyboardEvent)
+    type:int = field(default=TypeEnum.KeyEvent)
     def __init__(self,toggle,key):
         self.toggle = toggle
         self.key = key
@@ -82,7 +106,7 @@ class WaitEvent():
     def __init__(self,time):
         self.time = time
         self.id = generateId()
-EventUnion = Union[KeyboardEvent, MouseMoveEvent,MouseButtonEvent,MouseScrollEvent, WaitEvent]
+EventUnion = Union[TextEvent,BrowserEvent,KeyEvent, MouseMoveEvent,MouseButtonEvent,MouseScrollEvent, WaitEvent]
 
 @dataclass 
 class Action():

@@ -1,11 +1,7 @@
-import { ref, computed, type Ref } from 'vue'
+import { ref, type Ref } from 'vue'
 import { defineStore } from 'pinia'
 import { ToggleStatus, TypeEnum } from '@/helpers/sharedInterfaces'
-import type {
-  Action,
-  EventUnion,
-  KeyboardEvent as MyKeyboardEvent,
-} from '@/helpers/sharedInterfaces'
+import type { Action, EventUnion, KeyEvent as MyKeyEvent } from '@/helpers/sharedInterfaces'
 import isValidFilename from 'valid-filename'
 export const useStateStore = defineStore('state', () => {
   const HOSTNAME_FOR_BACKEND = 'http://localhost:3334'
@@ -122,8 +118,8 @@ export const useStateStore = defineStore('state', () => {
       await fetch(HOSTNAME_FOR_BACKEND + '/getKey').then(async (req) => {
         if (req.ok) {
           let data = await req.json()
-          if (focusedAction.value?.events[idx].type === TypeEnum.KeyboardEvent) {
-            ;(focusedAction.value.events[idx] as MyKeyboardEvent).key = data.key
+          if (focusedAction.value?.events[idx].type === TypeEnum.KeyEvent) {
+            ;(focusedAction.value.events[idx] as MyKeyEvent).key = data.key
           }
         } else {
           createWarningMessage('Failed to get key from backend')
@@ -187,10 +183,10 @@ export const useStateStore = defineStore('state', () => {
     let newEntry: EventUnion
     let id = 'id' + Math.random().toString(16).slice(2)
     switch (type) {
-      case TypeEnum.KeyboardEvent:
+      case TypeEnum.KeyEvent:
         newEntry = {
           id,
-          type: TypeEnum.KeyboardEvent,
+          type: TypeEnum.KeyEvent,
           toggle: ToggleStatus.PRESSED,
           key: 'Key.space',
         }
@@ -218,7 +214,21 @@ export const useStateStore = defineStore('state', () => {
           y: 0,
         }
         break
-
+      case TypeEnum.TextEvent:
+        newEntry = {
+          id,
+          type: TypeEnum.TextEvent,
+          text: '',
+        }
+        break
+      case TypeEnum.BrowserEvent:
+        newEntry = {
+          id,
+          type: TypeEnum.BrowserEvent,
+          newWindow: false,
+          url: 'https://google.com',
+        }
+        break
       case TypeEnum.WaitEvent:
         newEntry = { id, type: TypeEnum.WaitEvent, time: 0 }
         break

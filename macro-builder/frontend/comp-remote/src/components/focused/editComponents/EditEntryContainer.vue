@@ -2,20 +2,24 @@
 import { ref } from 'vue'
 import { TypeEnum } from '../../../helpers/sharedInterfaces'
 import type {
+  BrowserEvent,
   EventUnion,
-  KeyboardEvent,
+  KeyEvent,
   MouseButtonEvent,
   MouseMoveEvent,
   MouseScrollEvent,
+  TextEvent,
   WaitEvent,
 } from '../../../helpers/sharedInterfaces'
-import KeyboardEventInner from './inners/KeyboardEventInner.vue'
+import KeyEventInner from './inners/KeyEventInner.vue'
 import MouseButtonEventInner from './inners/MouseButtonEventInner.vue'
 import MouseMoveEventInner from './inners/MouseMoveEventInner.vue'
 import MouseScrollEventInner from './inners/MouseScrollEventInner.vue'
 import WaitEventInner from './inners/WaitEventInner.vue'
 import { useStateStore } from '@/stores/state'
 import AddEvent from './AddEvent.vue'
+import BrowserEventInner from './inners/BrowserEventInner.vue'
+import TextEventInner from './inners/TextEventInner.vue'
 const state = useStateStore()
 defineProps<{
   event: EventUnion
@@ -27,30 +31,38 @@ defineProps<{
     <div class="main-edit-container">
       <i class="handle">☰</i>
       <div class="contents">
-        <KeyboardEventInner
-          v-if="event.type === TypeEnum.KeyboardEvent"
-          :event="event as KeyboardEvent"
+        <KeyEventInner
+          v-if="event.type === TypeEnum.KeyEvent"
+          :event="event as KeyEvent"
           :idx="idx"
-        ></KeyboardEventInner>
+        ></KeyEventInner>
         <MouseButtonEventInner
-          v-if="event.type === TypeEnum.MouseButtonEvent"
+          v-else-if="event.type === TypeEnum.MouseButtonEvent"
           :event="event as MouseButtonEvent"
           :idx="idx"
         ></MouseButtonEventInner>
         <MouseMoveEventInner
-          v-if="event.type === TypeEnum.MouseMoveEvent"
+          v-else-if="event.type === TypeEnum.MouseMoveEvent"
           :event="event as MouseMoveEvent"
           :idx="idx"
         ></MouseMoveEventInner>
         <MouseScrollEventInner
-          v-if="event.type === TypeEnum.MouseScrollEvent"
+          v-else-if="event.type === TypeEnum.MouseScrollEvent"
           :event="event as MouseScrollEvent"
           :idx="idx"
         ></MouseScrollEventInner>
         <WaitEventInner
-          v-if="event.type === TypeEnum.WaitEvent"
+          v-else-if="event.type === TypeEnum.WaitEvent"
           :event="event as WaitEvent"
         ></WaitEventInner>
+        <BrowserEventInner
+          v-else-if="event.type === TypeEnum.BrowserEvent"
+          :event="event as BrowserEvent"
+        ></BrowserEventInner>
+        <TextEventInner
+          v-else-if="event.type === TypeEnum.TextEvent"
+          :event="event as TextEvent"
+        ></TextEventInner>
       </div>
 
       <button @click="state.removeEvent(idx)" class="remove">❌</button>
@@ -68,7 +80,6 @@ defineProps<{
   flex-direction: row;
   flex-grow: 1;
   justify-content: center;
-
 }
 </style>
 <style scoped>

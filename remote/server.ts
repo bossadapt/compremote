@@ -18,7 +18,6 @@ class Client {
   }
 }
 
-//2 seperate maps from the two seperate endpoints
 const activeClients = new Map<string, Client>();
 function keyGen(length: number) {
   const characters =
@@ -32,7 +31,7 @@ function keyGen(length: number) {
 
   return password;
 }
-// Automatically track clients
+// Reciever connections
 
 wss.on("connection", (ws: WebSocket) => {
   console.log("Client connected");
@@ -58,7 +57,7 @@ function waitForNextMessage(ws: WebSocket): Promise<string> {
     ws.once("close", () => reject(new Error("WebSocket closed")));
   });
 }
-//API the user wishes to send the requestes to
+//Frontend connections
 /** @type {import('express')} */
 console.log("building API");
 
@@ -82,7 +81,8 @@ apiApp.post("/login", (req, res) => {
   // Authenticate user here...
   console.log("recieved client login :" + req.body["roomKey"]);
   if (!req.body["roomKey"]) {
-    return res.status(400).json({ error: "Missing Room Key" });
+    console.log("User did not include roomkey when logging in");
+    return res.status(401).json({ error: "Missing Room Key" });
   }
   let attempt = activeClients.get(req.body["roomKey"]);
   if (attempt !== undefined && attempt.jwt === undefined) {
@@ -102,6 +102,7 @@ apiApp.post("/login", (req, res) => {
     res.json({ message: "Logged in" });
     return res;
   }
+  console.log("User failed to entry valid room key to login");
   return res.status(401).json({ error: "Not authenticated" });
 });
 
@@ -118,6 +119,7 @@ apiApp.get("/actions", async (req, res): Promise<any> => {
     let activeBackend = activeClients.get(user.roomKey);
     if (activeBackend == undefined || activeBackend.webSocket == undefined) {
       res.session.jwt = undefined;
+      console.log("User attempted to access a closed backend connection");
       return res.status(400).json({ error: "backend client no longer exists" });
     } else {
       activeBackend.webSocket?.send(JSON.stringify({ req: "actions" }));
@@ -125,10 +127,12 @@ apiApp.get("/actions", async (req, res): Promise<any> => {
         const message = await waitForNextMessage(activeBackend.webSocket);
         return res.json({ message });
       } catch (err) {
+        console.log("Backend didn't respond to actions");
         return res.status(500).json({ error: "Failed to receive message" });
       }
     }
   } catch (err) {
+    console.log("User attempted to get actions without a valid token");
     return res.status(401).json({ error: "Invalid token" });
   }
 });
@@ -146,9 +150,11 @@ apiApp.get("/play/:action", async (req, res): Promise<any> => {
     let activeBackend = activeClients.get(user.roomKey);
     if (activeBackend == undefined || activeBackend.webSocket == undefined) {
       res.session.jwt = undefined;
-      return res.status(400).json({ error: "backend client no longer exists" });
+      console.log("User attempted to access a closed backend connection");
+      return res.status(401).json({ error: "backend client no longer exists" });
     } else {
       if (req.params.action == undefined) {
+        console.log("User attempted to play without action included");
         return res.status(400).json({ error: "action to play not included" });
       }
       activeBackend.webSocket?.send(
@@ -156,12 +162,20 @@ apiApp.get("/play/:action", async (req, res): Promise<any> => {
       );
       try {
         const message = await waitForNextMessage(activeBackend.webSocket);
-        return res.json({ message });
+        if (message != "failed to play") {
+          return res.json({ message });
+        } else {
+          return res
+            .status(500)
+            .json({ error: "backend failed to play requested file" });
+        }
       } catch (err) {
+        console.log("Backend didn't respond to play");
         return res.status(500).json({ error: "Failed to receive message" });
       }
     }
   } catch (err) {
+    console.log("User attempted to play action without a valid token");
     return res.status(401).json({ error: "Invalid token" });
   }
 });

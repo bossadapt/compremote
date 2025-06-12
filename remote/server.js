@@ -53,7 +53,6 @@ var Client = /** @class */ (function () {
     }
     return Client;
 }());
-//2 seperate maps from the two seperate endpoints
 var activeClients = new Map();
 function keyGen(length) {
     var characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
@@ -64,7 +63,7 @@ function keyGen(length) {
     }
     return password;
 }
-// Automatically track clients
+// Reciever connections
 wss.on("connection", function (ws) {
     console.log("Client connected");
     var generatedRoomKey = keyGen(10);
@@ -86,7 +85,7 @@ function waitForNextMessage(ws) {
         ws.once("close", function () { return reject(new Error("WebSocket closed")); });
     });
 }
-//API the user wishes to send the requestes to
+//Frontend connections
 /** @type {import('express')} */
 console.log("building API");
 var express = require("express");
@@ -104,7 +103,8 @@ apiApp.post("/login", function (req, res) {
     // Authenticate user here...
     console.log("recieved client login :" + req.body["roomKey"]);
     if (!req.body["roomKey"]) {
-        return res.status(400).json({ error: "Missing Room Key" });
+        console.log("User did not include roomkey when logging in");
+        return res.status(401).json({ error: "Missing Room Key" });
     }
     var attempt = activeClients.get(req.body["roomKey"]);
     if (attempt !== undefined && attempt.jwt === undefined) {
@@ -120,6 +120,7 @@ apiApp.post("/login", function (req, res) {
         res.json({ message: "Logged in" });
         return res;
     }
+    console.log("User failed to entry valid room key to login");
     return res.status(401).json({ error: "Not authenticated" });
 });
 apiApp.get("/actions", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
@@ -138,6 +139,7 @@ apiApp.get("/actions", function (req, res) { return __awaiter(void 0, void 0, vo
                 activeBackend = activeClients.get(user.roomKey);
                 if (!(activeBackend == undefined || activeBackend.webSocket == undefined)) return [3 /*break*/, 2];
                 res.session.jwt = undefined;
+                console.log("User attempted to access a closed backend connection");
                 return [2 /*return*/, res.status(400).json({ error: "backend client no longer exists" })];
             case 2:
                 (_a = activeBackend.webSocket) === null || _a === void 0 ? void 0 : _a.send(JSON.stringify({ req: "actions" }));
@@ -150,10 +152,12 @@ apiApp.get("/actions", function (req, res) { return __awaiter(void 0, void 0, vo
                 return [2 /*return*/, res.json({ message: message })];
             case 5:
                 err_1 = _b.sent();
+                console.log("Backend didn't respond to actions");
                 return [2 /*return*/, res.status(500).json({ error: "Failed to receive message" })];
             case 6: return [3 /*break*/, 8];
             case 7:
                 err_2 = _b.sent();
+                console.log("User attempted to get actions without a valid token");
                 return [2 /*return*/, res.status(401).json({ error: "Invalid token" })];
             case 8: return [2 /*return*/];
         }
@@ -175,9 +179,11 @@ apiApp.get("/play/:action", function (req, res) { return __awaiter(void 0, void 
                 activeBackend = activeClients.get(user.roomKey);
                 if (!(activeBackend == undefined || activeBackend.webSocket == undefined)) return [3 /*break*/, 2];
                 res.session.jwt = undefined;
-                return [2 /*return*/, res.status(400).json({ error: "backend client no longer exists" })];
+                console.log("User attempted to access a closed backend connection");
+                return [2 /*return*/, res.status(401).json({ error: "backend client no longer exists" })];
             case 2:
                 if (req.params.action == undefined) {
+                    console.log("User attempted to play without action included");
                     return [2 /*return*/, res.status(400).json({ error: "action to play not included" })];
                 }
                 (_a = activeBackend.webSocket) === null || _a === void 0 ? void 0 : _a.send(JSON.stringify({ req: "play", action: req.params.action }));
@@ -187,13 +193,23 @@ apiApp.get("/play/:action", function (req, res) { return __awaiter(void 0, void 
                 return [4 /*yield*/, waitForNextMessage(activeBackend.webSocket)];
             case 4:
                 message = _b.sent();
-                return [2 /*return*/, res.json({ message: message })];
+                if (message != "failed to play") {
+                    return [2 /*return*/, res.json({ message: message })];
+                }
+                else {
+                    return [2 /*return*/, res
+                            .status(500)
+                            .json({ error: "backend failed to play requested file" })];
+                }
+                return [3 /*break*/, 6];
             case 5:
                 err_3 = _b.sent();
+                console.log("Backend didn't respond to play");
                 return [2 /*return*/, res.status(500).json({ error: "Failed to receive message" })];
             case 6: return [3 /*break*/, 8];
             case 7:
                 err_4 = _b.sent();
+                console.log("User attempted to play action without a valid token");
                 return [2 /*return*/, res.status(401).json({ error: "Invalid token" })];
             case 8: return [2 /*return*/];
         }

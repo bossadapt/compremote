@@ -10,7 +10,6 @@ class ToggleStatus(int, Enum):
     RELEASED = 1
 
 
-#TODO: a clone feature(to copy existing events)
 class TypeEnum(int, Enum):
     KeyEvent = 0
     MouseMoveEvent = 1

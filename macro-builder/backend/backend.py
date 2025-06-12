@@ -12,10 +12,6 @@ import os
 import signal
 
 from singles import get_next_key, get_cord, get_next_button
-#TODO: also make it generate a master.key folder that will act as authentication(or a real auth system)
-if not os.path.isdir("./actions"):
-    print("Actions directory not found, creating directory")
-    os.makedirs("./actions")
 
 app = Flask(__name__)
 CORS(app)
@@ -79,5 +75,6 @@ def getActions():
     actions = []
     for dir in dirList:
          with open("./actions/{}".format(dir),'r') as file:
-            actions.append({"name":dir[:-4],"events":json.load(file)})
+            if(dir != ".gitkeep"):
+                actions.append({"name":dir[:-4],"events":json.load(file)})
     return actions

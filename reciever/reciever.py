@@ -36,7 +36,7 @@ async def recieverLoop():
                 elif message["req"] == "play":
                     print("Server requested play of {}".format(message["action"]))
                     try:
-                        play_events('actions/{}.txt'.format(message["action"]),1)
+                        play_events('./../macro-builder/backend/actions/{}.txt'.format(message["action"]),1)
                         websocket.send("finished")
                     except Exception as e:
                         print(e)

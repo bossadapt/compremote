@@ -91,6 +91,7 @@ function waitForNextMessage(ws) {
 console.log("building API");
 var express = require("express");
 var cookieSession = require("cookie-session");
+var cors = require("cors");
 var apiApp = express();
 apiApp.use(cookieSession({
     name: process.env.SESSION_NAME,
@@ -98,6 +99,7 @@ apiApp.use(cookieSession({
     maxAge: 24 * 60 * 60 * 1000
 }));
 apiApp.use(express.json());
+apiApp.use(cors({ origin: "http://localhost:5173", credentials: true }));
 apiApp.post("/login", function (req, res) {
     // Authenticate user here...
     console.log("recieved client login :" + req.body["roomKey"]);
@@ -197,7 +199,7 @@ apiApp.get("/play/:action", function (req, res) { return __awaiter(void 0, void 
         }
     });
 }); });
-var PORT = process.env.PORT || 3000;
+var PORT = process.env.PORT || 3212;
 apiApp.listen(PORT, function () {
     console.log("Express API listening on http://localhost:".concat(PORT));
     console.log("listening reached");

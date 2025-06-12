@@ -64,6 +64,7 @@ console.log("building API");
 
 const express = require("express");
 const cookieSession = require("cookie-session");
+const cors = require("cors");
 import { JwtPayload } from "jsonwebtoken";
 
 const apiApp = express();
@@ -75,6 +76,7 @@ apiApp.use(
   })
 );
 apiApp.use(express.json());
+apiApp.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
 apiApp.post("/login", (req, res) => {
   // Authenticate user here...
@@ -164,7 +166,7 @@ apiApp.get("/play/:action", async (req, res): Promise<any> => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3212;
 apiApp.listen(PORT, () => {
   console.log(`Express API listening on http://localhost:${PORT}`);
   console.log("listening reached");

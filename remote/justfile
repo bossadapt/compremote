@@ -1,0 +1,7 @@
+REMOTE_USER := "root"
+REMOTE_HOST := "138.197.56.84"
+REMOTE_PATH := "/var/www/bossadapt.org/remote/"
+deploy:
+    tsc server.ts
+    scp server.js .env package.json package-lock.json {{REMOTE_USER}}@{{REMOTE_HOST}}:{{REMOTE_PATH}}
+    ssh {{REMOTE_USER}}@{{REMOTE_HOST}} "cd {{REMOTE_PATH}}; npm install;/root/.nvm/versions/node/v18.19.1/bin/pm2 delete server; /root/.nvm/versions/node/v18.19.1/bin/pm2 start server.js;"

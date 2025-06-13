@@ -3,7 +3,7 @@ import { onMounted, ref, type Ref } from 'vue'
 import Login from './components/Login.vue'
 import ActionList from './components/ActionList.vue'
 import Warning from './components/Warning.vue'
-const hostname = 'http://localhost:3212'
+const hostname = 'https://bossadapt.org/remote/api'
 const actions: Ref<string[]> = ref([])
 const loggedIn = ref(false)
 const warningMessage: Ref<string | null> = ref(null)

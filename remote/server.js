@@ -41,9 +41,8 @@ var jwt = require("jsonwebtoken");
 require("dotenv/config");
 console.log("building Websocket");
 //Websocket to user device they wish to send existing macros to
-var wss = new ws_1.WebSocketServer({ port: 5876 });
+var wss = new ws_1.WebSocketServer({ port: 5876, path: "/remote/ws" });
 // frontend server URL base
-var host = "http://localhsot:5173";
 var Client = /** @class */ (function () {
     function Client(roomKey, webSocket, jwt) {
         this.jwt = undefined;
@@ -98,7 +97,7 @@ apiApp.use(cookieSession({
     maxAge: 24 * 60 * 60 * 1000
 }));
 apiApp.use(express.json());
-apiApp.use(cors({ origin: "http://localhost:5173", credentials: true }));
+apiApp.use(cors({ origin: "http://bossadapt.org/remote", credentials: true }));
 apiApp.post("/login", function (req, res) {
     // Authenticate user here...
     console.log("recieved client login :" + req.body["roomKey"]);

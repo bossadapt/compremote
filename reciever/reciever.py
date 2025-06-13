@@ -8,7 +8,7 @@ from play import play_events
 
 serverConnection = None
 async def recieverLoop():
-    with connect("ws://localhost:5876") as websocket:
+    with connect("wss://bossadapt.org/remote/ws") as websocket:
         print("Connected to server.")
         websocket.send("connect")
         roomKey = ""

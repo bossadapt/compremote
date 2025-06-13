@@ -4,9 +4,8 @@ import "dotenv/config";
 console.log("building Websocket");
 
 //Websocket to user device they wish to send existing macros to
-const wss = new WebSocketServer({ port: 5876 });
+const wss = new WebSocketServer({ port: 5876, path: "/remote/ws" });
 // frontend server URL base
-const host = "http://localhsot:5173";
 class Client {
   roomKey: string;
   webSocket: WebSocket | undefined;
@@ -75,7 +74,7 @@ apiApp.use(
   })
 );
 apiApp.use(express.json());
-apiApp.use(cors({ origin: "http://localhost:5173", credentials: true }));
+apiApp.use(cors({ origin: "http://bossadapt.org/remote", credentials: true }));
 
 apiApp.post("/login", (req, res) => {
   // Authenticate user here...

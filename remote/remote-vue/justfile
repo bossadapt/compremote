@@ -1,0 +1,7 @@
+REMOTE_USER := "root"
+REMOTE_HOST := "138.197.56.84"
+REMOTE_PATH := "/var/www/bossadapt.org/remote/frontend"
+deploy:
+    npm run build
+    scp -r ./dist/* {{REMOTE_USER}}@{{REMOTE_HOST}}:{{REMOTE_PATH}}
+

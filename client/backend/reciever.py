@@ -112,6 +112,7 @@ class RecieverClient:
         self.sendUpdate2Frontend({'type':"bridgeOffline"})
         self.status = RecieverStatus.OFFLINE
         self.room_key = ''
+        self.isRunning = False
     def sendUpdate2Frontend(self, update):
         if self.reciever_server.loop:
             asyncio.run_coroutine_threadsafe(

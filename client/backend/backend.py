@@ -1,6 +1,5 @@
 import subprocess
 import sys
-from pynput import keyboard, mouse
 from flask import Flask, request
 from flask_cors import CORS
 from record import record_events
@@ -46,21 +45,35 @@ def helloWorld():
 def record():
     return record_events()
 
-@app.route("/actions/play/<action_name>", methods=['GET'])
-def play(action_name):
+@app.route("/actions/play/", methods=['PATCH'])
+def play():
+    data = request.get_json()
+    action_name = data['name']
     play_events('actions/{}.txt'.format(action_name),1)
     return {"status": "finished"}
 
-@app.route("/actions/save/<action_name>", methods=['PATCH'])
-def saveAction(action_name):
+@app.route("/actions/save/", methods=['PATCH'])
+def saveAction():
     data = request.get_json()
+    action_name = data['name']
+    events = data['events']
     with open('actions/{}.txt'.format(action_name), 'w') as outfile:
-                json.dump(data, outfile)
+                json.dump(events, outfile)
     return {"status": "finished"}
 
-@app.route("/actions/remove/<action_name>", methods=['DELETE'])
-def removeAction(action_name):
-    os.remove("./actions/{}{}".format(action_name,".txt"))
+@app.route("/actions/rename/", methods=['PATCH'])
+def renameAction():
+    data = request.get_json()
+    oldName = data['old']
+    newName = data['new']
+    os.rename("./actions/{}.txt".format(oldName),"./actions/{}.txt".format(newName))
+    return {"status": "finished"}
+
+@app.route("/actions/remove/", methods=['DELETE'])
+def removeAction():
+    data = request.get_json()
+    action_name = data['name']
+    os.remove("./actions/{}.txt".format(action_name))
     return {"status": "finished"}
 @app.route("/getKey")
 def getKey():

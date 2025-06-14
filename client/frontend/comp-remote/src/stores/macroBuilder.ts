@@ -22,7 +22,7 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
   const waitingForInputText: Ref<string> = ref('')
   const isInitializing: Ref<boolean> = ref(true)
   const focusedAction: Ref<Action | null> = ref(null)
-
+  const modalContent: Ref<string> = ref('')
   async function createActionByRecording(name: string) {
     if (!isValidFilename(name)) {
       createWarningMessage('unable to start, name attempted is an invalid filename(windows/linux)')
@@ -80,15 +80,22 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
       createWarningMessage('unable to save, this name already exists')
     } else {
       saveAction(newAction)
-      actions.value.push(newAction)
-      focusedAction.value = newAction
     }
   }
 
   function removeAction(removedAction: Action) {
-    fetch(HOSTNAME_FOR_BACKEND + '/actions/remove/' + removedAction.name, {
+    fetch(HOSTNAME_FOR_BACKEND + '/actions/remove/', {
       method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name: removedAction.name }),
+    }).then((req) => {
+      if (!req.ok) {
+        createWarningMessage('Failed to delete action to computer')
+      }
     })
+
     actions.value = actions.value.filter((curAction) => {
       return curAction.name !== removedAction.name
     })
@@ -111,15 +118,18 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
     return new Promise((resolve) => setTimeout(resolve, ms))
   }
   function saveAction(action2save: Action) {
-    fetch(HOSTNAME_FOR_BACKEND + '/actions/save/' + action2save.name, {
+    fetch(HOSTNAME_FOR_BACKEND + '/actions/save/', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(action2save.events),
+      body: JSON.stringify(action2save),
     }).then((req) => {
       if (!req.ok) {
         createWarningMessage('Failed to save action to computer')
+      } else {
+        actions.value.push(action2save)
+        focusedAction.value = action2save
       }
     })
   }
@@ -237,11 +247,38 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
   function removeEvent(idx: number) {
     focusedAction.value?.events.splice(idx, 1)
   }
+  function renameFocused(newName: string) {
+    if (focusedAction.value !== null && isValidFilename(newName)) {
+      fetch(HOSTNAME_FOR_BACKEND + '/actions/rename/', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ old: focusedAction.value.name, new: newName }),
+      }).then((req) => {
+        if (!req.ok) {
+          createWarningMessage('Failed to rename acition')
+        } else {
+          //closes the popup
+          modalContent.value = ''
+          focusedAction.value!.name = newName
+        }
+      })
+    } else {
+      createWarningMessage('new name is invalid or focused action is not available')
+    }
+  }
   function playFocused() {
     console.log('Play focused called')
     if (focusedAction.value != null) {
       console.log('focused was not null')
-      fetch(HOSTNAME_FOR_BACKEND + '/actions/play/' + focusedAction.value.name).then((req) => {
+      fetch(HOSTNAME_FOR_BACKEND + '/actions/play/', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: focusedAction.value.name }),
+      }).then((req) => {
         if (!req.ok) {
           createWarningMessage('Failed to play from backend')
         }
@@ -257,6 +294,8 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
     isInitializing,
     focusedAction,
     warningMessage,
+    modalContent,
+    renameFocused,
     syncActions,
     createWarningMessage,
     createActionByRecording,

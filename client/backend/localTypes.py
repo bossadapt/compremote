@@ -19,6 +19,8 @@ class ToggleStatus(int, Enum):
 
 #TODO: any of the following
 # change the logo
+# handle backend disconnect better from macro builder
+# handle disconnect from bridge better(bridge wont let reconnect)
 # add events that use selenium to control a website
 # add events that call existing actions
 # add a terminal event

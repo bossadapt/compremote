@@ -127,7 +127,7 @@ apiApp.get("/actions", async (req, res): Promise<any> => {
         const message = await waitForNextMessage(activeBackend.webSocket);
         return res.json({ message });
       } catch (err) {
-        console.log("Backend didn't respond to actions");
+        console.log("Backend didn't respond to act ions");
         return res.status(500).json({ error: "Failed to receive message" });
       }
     }
@@ -137,7 +137,7 @@ apiApp.get("/actions", async (req, res): Promise<any> => {
   }
 });
 
-apiApp.get("/play/:action", async (req, res): Promise<any> => {
+apiApp.patch("/play/", async (req, res): Promise<any> => {
   if (!req.session || !req.session.jwt)
     return res.status(401).json({ error: "Not authenticated" });
   const token = req.session.jwt;
@@ -153,13 +153,18 @@ apiApp.get("/play/:action", async (req, res): Promise<any> => {
       console.log("User attempted to access a closed backend connection");
       return res.status(401).json({ error: "backend client no longer exists" });
     } else {
-      if (req.params.action == undefined) {
-        console.log("User attempted to play without action included");
-        return res.status(400).json({ error: "action to play not included" });
+      try {
+        let name = req.body.name;
+        if (name == undefined) {
+          console.log("User attempted to play without action included");
+          return res.status(400).json({ error: "action to play not included" });
+        }
+        activeBackend.webSocket?.send(
+          JSON.stringify({ req: "play", action: name })
+        );
+      } catch (err) {
+        return res.status(400).json({ error: "error reading action request" });
       }
-      activeBackend.webSocket?.send(
-        JSON.stringify({ req: "play", action: req.params.action })
-      );
       try {
         const message = await waitForNextMessage(activeBackend.webSocket);
         if (message != "failed to play") {

@@ -9,7 +9,7 @@ let state = useMacroBuilderStore()
 <template>
   <div class="focus-main-container">
     <div v-if="state.focusedAction !== null" class="focus-main-header">
-      <h1 class="focus-main-header-text">{{ state.focusedAction.name }}</h1>
+      <h1 class="focus-main-header-text" style="cursor: pointer;" @click="state.modalContent='renameFocused'">{{ state.focusedAction.name }}</h1>
       <button
         class="save-button"
         @click="state.playFocused()"

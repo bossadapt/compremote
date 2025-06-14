@@ -5,6 +5,7 @@ import FocusedActions from './components/focused/FocusedAction.vue'
 import { useMacroBuilderStore } from './stores/macroBuilder'
 import { useRecieverStore } from './stores/reciever'
 import Reciever from './components/reciever/Reciever.vue'
+import Popup from './components/popup/Popup.vue'
 const state = useMacroBuilderStore()
 const recieverStore = useRecieverStore()
 const focusedPage = ref(0);
@@ -36,6 +37,7 @@ onMounted(() => {
   <div v-else class="main-container">
     <Reciever/>
   </div>
+  <Popup/>
 </template>
 
 <style>

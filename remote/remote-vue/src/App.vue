@@ -57,8 +57,7 @@ async function getActions() {
       actions.value = await unwrapApiResponse(res)
       return true
     }
-      return false
-
+    return false
   })
 }
 function attemptLogIn(roomKey: string) {
@@ -85,8 +84,13 @@ function attemptLogIn(roomKey: string) {
   }
 }
 function attemptPlay(action: string) {
-  fetch(hostname + '/play/' + action, {
+  fetch(hostname + '/play', {
     credentials: 'include',
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ name: action }),
   }).then((res) => {
     if (res.status === 401) {
       loggedIn.value = false
@@ -116,7 +120,7 @@ function attemptPlay(action: string) {
 * {
   color: white;
 }
-button{
+button {
   cursor: pointer;
 }
 input {

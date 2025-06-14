@@ -153,7 +153,7 @@ apiApp.get("/actions", function (req, res) { return __awaiter(void 0, void 0, vo
                 return [2 /*return*/, res.json({ message: message })];
             case 5:
                 err_1 = _b.sent();
-                console.log("Backend didn't respond to actions");
+                console.log("Backend didn't respond to act ions");
                 return [2 /*return*/, res.status(500).json({ error: "Failed to receive message" })];
             case 6: return [3 /*break*/, 8];
             case 7:
@@ -164,8 +164,8 @@ apiApp.get("/actions", function (req, res) { return __awaiter(void 0, void 0, vo
         }
     });
 }); });
-apiApp.get("/play/:action", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var token, user, activeBackend, message, err_3, err_4;
+apiApp.patch("/play/", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var token, user, activeBackend, name_1, message, err_3, err_4;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -183,11 +183,17 @@ apiApp.get("/play/:action", function (req, res) { return __awaiter(void 0, void 
                 console.log("User attempted to access a closed backend connection");
                 return [2 /*return*/, res.status(401).json({ error: "backend client no longer exists" })];
             case 2:
-                if (req.params.action == undefined) {
-                    console.log("User attempted to play without action included");
-                    return [2 /*return*/, res.status(400).json({ error: "action to play not included" })];
+                try {
+                    name_1 = req.body.name;
+                    if (name_1 == undefined) {
+                        console.log("User attempted to play without action included");
+                        return [2 /*return*/, res.status(400).json({ error: "action to play not included" })];
+                    }
+                    (_a = activeBackend.webSocket) === null || _a === void 0 ? void 0 : _a.send(JSON.stringify({ req: "play", action: name_1 }));
                 }
-                (_a = activeBackend.webSocket) === null || _a === void 0 ? void 0 : _a.send(JSON.stringify({ req: "play", action: req.params.action }));
+                catch (err) {
+                    return [2 /*return*/, res.status(400).json({ error: "error reading action request" })];
+                }
                 _b.label = 3;
             case 3:
                 _b.trys.push([3, 5, , 6]);

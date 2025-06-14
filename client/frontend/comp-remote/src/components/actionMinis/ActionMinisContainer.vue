@@ -9,10 +9,12 @@ let state = useMacroBuilderStore()
 <template>
   <div class="mini-main-container">
     <h1 class="containerHeader">Actions</h1>
-    <li v-for="action in state.actions">
-      <ActionMini :action="action"/>
-    </li>
-    <ActionMini :action="null"/>
+    <div class="actions-container">
+      <li v-for="action in state.actions">
+        <ActionMini :action="action"/>
+      </li>
+      <ActionMini :action="null"/>
+    </div>
   </div>
 </template>
 <style scoped>
@@ -21,10 +23,14 @@ let state = useMacroBuilderStore()
   flex-direction: column;
   width: 35%;
   min-height: 90vh;
+  max-height: 90vh;
   background-color: var(--primary);
   border-radius: 16px;
 }
-
+.actions-container{
+  overflow-y: auto;
+  max-height: 80vh;
+}
 .containerHeader {
   color: var(--background);
   margin-left: auto;

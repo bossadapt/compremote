@@ -116,6 +116,9 @@ function attemptPlay(action: string) {
 * {
   color: white;
 }
+button{
+  cursor: pointer;
+}
 input {
   color: black;
 }
@@ -132,6 +135,5 @@ body {
 button {
   background-color: black;
   color: white;
-  cursor: pointer;
 }
 </style>

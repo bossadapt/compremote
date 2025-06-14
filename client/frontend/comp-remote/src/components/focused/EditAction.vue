@@ -7,6 +7,7 @@ import { TypeEnum } from '@/helpers/sharedInterfaces'
 let state = useMacroBuilderStore()
 </script>
 <template>
+  <div class="edit-list-container">
   <AddEvent :idx="0" :type-param="TypeEnum.TextEvent" style="margin-top: 2%; margin-left: 5%; margin-right: 2%"></AddEvent>
   <draggable
     v-if="state.focusedAction && state.focusedAction.events"
@@ -21,4 +22,11 @@ let state = useMacroBuilderStore()
       </li>
     </template>
   </draggable>
+  </div>
 </template>
+<style>
+.edit-list-container{
+  max-height: 100%;
+  overflow-y: scroll;
+}
+</style>

@@ -17,8 +17,8 @@ onMounted(() => {
 <template>
   <link href="https://fonts.googleapis.com/css?family=JetBrains Mono" rel="stylesheet" />
   <div class="nav-bar">
-    <button :disabled="focusedPage === 0" class="nav-bar-button" @click="focusedPage=0">Macro Builder</button>
-    <button :disabled="focusedPage === 1" class="nav-bar-button" @click="focusedPage=1">Reciever Bridge</button>
+    <button :disabled="focusedPage === 0" :class="focusedPage ===0?'nav-bar-button-macro':'nav-bar-button-reciever'" @click="focusedPage=0">Macro Builder</button>
+    <button :disabled="focusedPage === 1" :class="focusedPage ===0?'nav-bar-button-macro':'nav-bar-button-reciever'" @click="focusedPage=1">Reciever Bridge</button>
   </div>
   <div v-if="state.warningMessage !== null" class="warning-container">
     <h3 class="warning-text">Warning: {{ state.warningMessage }}</h3>
@@ -69,7 +69,7 @@ body {
   width: 100%;
   height: 2rem;
 }
-.nav-bar-button{
+.nav-bar-button-macro{
   cursor: pointer;
   width: 50%;
   font-size: 1rem;
@@ -77,9 +77,23 @@ body {
   background-color: var(--background);
   color: var(--primary);
 }
-.nav-bar-button:disabled{
+.nav-bar-button-macro:disabled{
   color: var(--background);
   background-color: var(--primary);
+  cursor:default;
+}
+.nav-bar-button-reciever{
+  cursor: pointer;
+  width: 50%;
+  font-size: 1rem;
+  height: 2rem;
+  background-color: var(--background);
+  color: var(--text);
+}
+.nav-bar-button-reciever:disabled{
+  color: var(--background);
+  background-color: var(--text);
+  cursor:default;
 }
 .general-instructions {
   font-size: x-large;

@@ -18,11 +18,12 @@ class ToggleStatus(int, Enum):
     RELEASED = 1
 
 #TODO: any of the following
+# change the logo
 # add events that use selenium to control a website
 # add events that call existing actions
+# add a terminal event
 # add a way to edit action names
 # add a way to clone existing actions
-# add a frontend for the reciever so that you can scan a qrcode to get the code(or add account system)
 # add a way for users from the remote app to pass limited input(may cause risk)
 # add a random click in a range(mostly so i get a random youtube video)
 class TypeEnum(int, Enum):

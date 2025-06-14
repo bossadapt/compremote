@@ -24,33 +24,44 @@ let state = useMacroBuilderStore()
       create
     </div>
     <div class="focus-hr"></div>
-    <EditAction v-if="state.focusedAction !== null"></EditAction>
-    <CreateAction v-else></CreateAction>
+    <div class="scrollable-content">
+      <EditAction v-if="state.focusedAction !== null"></EditAction>
+      <CreateAction v-else></CreateAction>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .focus-main-container {
-  width: 65%;
-  width: 100%;
+    width: 65%;
+  display: flex;
+  flex-direction: column;
+  height: 91vh;
 }
 .focus-main-header {
+  width: 100%;
   display: flex;
   flex-direction: row;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--background);
 }
 .focus-main-header-text {
   color: var(--primary);
-  width: 90%;
+  flex: 1 1 0;
+  min-width: 0;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
   font-size: 64px;
   margin-bottom: 0px;
   margin-top: 1%;
+  overflow-wrap: break-word;
 }
 .save-button {
   cursor: pointer;
-  width: 10%;
+  flex: 0 0 10%;
   background-color: var(--secondary);
   border: 0px;
   font-size: 20px;
@@ -60,5 +71,10 @@ let state = useMacroBuilderStore()
   height: 9px;
   width: 100%;
   background-image: linear-gradient(to right, var(--primary), 5%, var(--secondary));
+}
+.scrollable-content {
+  flex: 1 1 0;
+  overflow-y: auto;
+  min-height: 0; 
 }
 </style>

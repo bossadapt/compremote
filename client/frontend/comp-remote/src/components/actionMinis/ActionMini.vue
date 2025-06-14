@@ -9,7 +9,7 @@ defineProps<{
 <template>
   <div v-if="action === null" class="main-mini-unfocused">
     <div class="mini-contents">
-      <div class="create-button"  @click="state.focusedAction = null">
+      <div class="create-button" @click="state.focusedAction = null">
         <h3 class="create-text">Create New</h3>
       </div>
     </div>
@@ -53,12 +53,15 @@ defineProps<{
 .mini-contents {
   display: flex;
   flex-direction: row;
+  align-items: stretch; /* Add this line */
+
   margin-left: 1%;
   margin-right: 1%;
 }
 .title-h3 {
   color: var(--text);
   font-size: 20px;
+  overflow-wrap: break-word;
 }
 .title-button {
   width: 80%;
@@ -73,9 +76,12 @@ defineProps<{
 }
 .delete-button {
   width: 20%;
-  height: 100%;
   cursor: pointer;
   border-left: 1px dashed var(--danger);
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .create-text {
   border: 0px;
@@ -83,7 +89,7 @@ defineProps<{
   text-align: center;
   color: var(--text);
 }
-.create-button{
+.create-button {
   width: 100%;
   height: 100%;
   cursor: pointer;

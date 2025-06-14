@@ -55,7 +55,7 @@ export const useRecieverStore = defineStore('reciever', () => {
         }
         //response remote api requests: play,actions, unkownMessage//DONE
         case 'newRequest': {
-          bridgeState.value.requestHistory.push(data.request)
+          bridgeState.value.requestHistory.unshift(data.request)
           break
         }
       }

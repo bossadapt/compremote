@@ -8,13 +8,20 @@ const actions: Ref<string[]> = ref([])
 const loggedIn = ref(false)
 const warningMessage: Ref<string | null> = ref(null)
 
-
 onMounted(async () => {
   //see if they already have a session token
-  await getActions()
-  console.log(warningMessage.value)
-  if (warningMessage.value === null) {
+  let firstAttemptToSync = await getActions()
+  console.log('firstattempt:' + firstAttemptToSync)
+  if (firstAttemptToSync) {
+    console.log('logged in')
     loggedIn.value = true
+  } else {
+    console.log('tried to log them in the ol fashion way')
+    let urlParams = new URLSearchParams(window.location.search)
+    if (urlParams.has('roomKey')) {
+      console.log('tried to log them in the ol fashion way p2')
+      attemptLogIn(urlParams.get('roomKey')!)
+    }
   }
 })
 async function createWarningMessage(message: string) {
@@ -36,17 +43,22 @@ async function unwrapApiResponse(res: Response) {
   return JSON.parse(message.message)
 }
 async function getActions() {
-  await fetch(hostname + '/actions', {
+  return await fetch(hostname + '/actions', {
     credentials: 'include',
   }).then(async (res) => {
     if (res.status === 401) {
-      loggedIn.value = false
-      createWarningMessage('Backend no longer active')
+      if (loggedIn.value === true) {
+        loggedIn.value = false
+        createWarningMessage('Backend no longer active')
+      }
     } else if (res.status === 500) {
       createWarningMessage('unable to play requested play')
     } else {
       actions.value = await unwrapApiResponse(res)
+      return true
     }
+      return false
+
   })
 }
 function attemptLogIn(roomKey: string) {
@@ -80,8 +92,8 @@ function attemptPlay(action: string) {
       loggedIn.value = false
       createWarningMessage('Backend is no longer connected')
     } else if (res.status === 500) {
-        //assume its because its not there anymore and get the new state
-        getActions()
+      //assume its because its not there anymore and get the new state
+      getActions()
       createWarningMessage('Unable to play specified action, fetching new state of actions')
     } else {
     }
@@ -90,32 +102,36 @@ function attemptPlay(action: string) {
 </script>
 
 <template>
-    <Warning :warning-message="warningMessage"></Warning>
-    <Login v-if="loggedIn === false" :attempt-log-in="attemptLogIn"></Login>
-    <ActionList v-else :play-function="attemptPlay" :actions="actions" :get-actions-function="getActions"></ActionList>
+  <Warning :warning-message="warningMessage"></Warning>
+  <Login v-if="loggedIn === false" :attempt-log-in="attemptLogIn"></Login>
+  <ActionList
+    v-else
+    :play-function="attemptPlay"
+    :actions="actions"
+    :get-actions-function="getActions"
+  ></ActionList>
 </template>
 
 <style>
-
-*{
-    color: white;
+* {
+  color: white;
 }
-input{
-    color: black;
+input {
+  color: black;
 }
-body{
-    padding: 0px;
-    background-color: black;
+body {
+  padding: 0px;
+  background-color: black;
 }
-.main-app{
-    padding-left: 0;
-    padding-right: 0;
-    margin: 0px;
-    width: 100vw;
+.main-app {
+  padding-left: 0;
+  padding-right: 0;
+  margin: 0px;
+  width: 100vw;
 }
-button{
-    background-color: black;
-    color: white;
-    cursor: pointer;
+button {
+  background-color: black;
+  color: white;
+  cursor: pointer;
 }
 </style>

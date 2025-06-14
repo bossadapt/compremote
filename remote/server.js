@@ -99,6 +99,7 @@ apiApp.use(cookieSession({
 apiApp.use(express.json());
 apiApp.use(cors({ origin: "http://bossadapt.org/remote", credentials: true }));
 apiApp.post("/login", function (req, res) {
+    var _a;
     // Authenticate user here...
     console.log("recieved client login :" + req.body["roomKey"]);
     if (!req.body["roomKey"]) {
@@ -115,6 +116,7 @@ apiApp.post("/login", function (req, res) {
         if (!req.session) {
             req.session = {};
         }
+        (_a = attempt.webSocket) === null || _a === void 0 ? void 0 : _a.send(JSON.stringify({ req: "clientConnected" }));
         req.session.jwt = token; // Store JWT in session cookie
         res.json({ message: "Logged in" });
         return res;

@@ -97,6 +97,7 @@ apiApp.post("/login", (req, res) => {
     if (!req.session) {
       req.session = {};
     }
+    attempt.webSocket?.send(JSON.stringify({ req: "clientConnected" }));
     req.session.jwt = token; // Store JWT in session cookie
     res.json({ message: "Logged in" });
     return res;

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { MouseScrollEvent } from '@/helpers/sharedInterfaces'
-import Position from '../Position.vue'
+import Position from './../helpers/Position.vue'
 defineProps<{
   event: MouseScrollEvent
   idx: number

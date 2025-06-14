@@ -67,9 +67,7 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
   }
 
   function addAction(newAction: Action) {
-    console.log('add action called')
     let newName: string = newAction.name.trim()
-    console.log(newAction.name)
     if (!isValidFilename(newName)) {
       createWarningMessage('unable to save, name attempted is an invalid filename(windows/linux)')
     } else if (
@@ -79,7 +77,7 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
     ) {
       createWarningMessage('unable to save, this name already exists')
     } else {
-      saveAction(newAction)
+      saveAction(newAction, true)
     }
   }
 
@@ -117,7 +115,7 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
   function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms))
   }
-  function saveAction(action2save: Action) {
+  function saveAction(action2save: Action, isNew: boolean) {
     fetch(HOSTNAME_FOR_BACKEND + '/actions/save/', {
       method: 'PATCH',
       headers: {
@@ -128,8 +126,10 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
       if (!req.ok) {
         createWarningMessage('Failed to save action to computer')
       } else {
-        actions.value.push(action2save)
-        focusedAction.value = action2save
+        if (isNew) {
+          actions.value.push(action2save)
+          focusedAction.value = action2save
+        }
       }
     })
   }

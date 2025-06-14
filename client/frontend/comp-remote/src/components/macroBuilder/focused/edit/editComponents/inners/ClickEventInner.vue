@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ClickEvent } from '@/helpers/sharedInterfaces'
-import Position from '../Position.vue'
+import Position from './../helpers/Position.vue'
 import { useMacroBuilderStore } from '@/stores/macroBuilder'
 const state = useMacroBuilderStore()
 defineProps<{

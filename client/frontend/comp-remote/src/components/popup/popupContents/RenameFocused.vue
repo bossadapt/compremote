@@ -10,8 +10,8 @@ let newName = ref(state.focusedAction?.name||'')
     <h3>New Name:</h3>
     <input type="text" v-model="newName" />
     <div>
-      <button class="save-button" @click="state.renameFocused(newName)">Save</button>
-      <button class="cancel-button" @click="state.modalContent = ''">Cancel</button>
+      <button class="save-name-button" @click="state.renameFocused(newName)">Save</button>
+      <button class="cancel-name-button" @click="state.modalContent = ''">Cancel</button>
     </div>
 </template>
 <style scoped>
@@ -31,10 +31,10 @@ button {
   color: var(--primary);
   width: 50%;
 }
-.save-button {
+.save-name-button {
   margin-right: auto;
 }
-.cancel-button {
+.cancel-name-button {
   margin-left: auto;
 }
 </style>

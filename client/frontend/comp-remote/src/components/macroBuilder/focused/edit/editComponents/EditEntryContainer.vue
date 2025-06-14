@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { TypeEnum } from '../../../helpers/sharedInterfaces'
+import { TypeEnum } from '../../../../../helpers/sharedInterfaces'
 import type {
   BrowserEvent,
   ClickEvent,
@@ -11,14 +11,14 @@ import type {
   MouseScrollEvent,
   TextEvent,
   WaitEvent,
-} from '../../../helpers/sharedInterfaces'
+} from '../../../../../helpers/sharedInterfaces'
 import KeyEventInner from './inners/KeyEventInner.vue'
 import MouseButtonEventInner from './inners/MouseButtonEventInner.vue'
 import MouseMoveEventInner from './inners/MouseMoveEventInner.vue'
 import MouseScrollEventInner from './inners/MouseScrollEventInner.vue'
 import WaitEventInner from './inners/WaitEventInner.vue'
 import { useMacroBuilderStore } from '@/stores/macroBuilder'
-import AddEvent from './AddEvent.vue'
+import AddEvent from './helpers/AddEvent.vue'
 import BrowserEventInner from './inners/BrowserEventInner.vue'
 import TextEventInner from './inners/TextEventInner.vue'
 import ClickEventInner from './inners/ClickEventInner.vue'

@@ -2,9 +2,13 @@
 import { useMacroBuilderStore } from '@/stores/macroBuilder'
 import { ref, type Ref } from 'vue'
 let state = useMacroBuilderStore()
-const inputName: Ref<string>= ref("")
+const inputName: Ref<string> = ref('')
 </script>
 <template>
+  <div class="focus-main-header">
+    <h1 class="focus-main-header-text">Create New Action</h1>
+  </div>
+  <div class="focus-hr"></div>
   <div class="container">
     <h2>Name</h2>
     <input v-model="inputName" placeholder="name required" />
@@ -14,7 +18,7 @@ const inputName: Ref<string>= ref("")
 </template>
 <style scoped>
 .container {
-  margin-left: 1%;
+  margin-left: 5%;
   margin-right: 1%;
   display: flex;
   flex-direction: column;
@@ -29,7 +33,7 @@ input {
   font-size: 20px;
 }
 button {
-    width: 40%;
+  width: 40%;
 
   font-size: 20px;
   cursor: pointer;

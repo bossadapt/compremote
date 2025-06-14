@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import ActionMini from './ActionMini.vue'
-import type { Action } from '../../helpers/sharedInterfaces'
 import { useMacroBuilderStore } from '@/stores/macroBuilder';
 
 let state = useMacroBuilderStore()

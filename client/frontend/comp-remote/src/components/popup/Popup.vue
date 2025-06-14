@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useMacroBuilderStore } from '@/stores/macroBuilder';
-import RenameFocused from './RenameFocused.vue';
+import RenameFocused from './popupContents/RenameFocused.vue';
 
 let state = useMacroBuilderStore()
 </script>

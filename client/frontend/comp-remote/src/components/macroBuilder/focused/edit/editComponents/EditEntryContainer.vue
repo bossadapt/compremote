@@ -9,6 +9,7 @@ import type {
   MouseButtonEvent,
   MouseMoveEvent,
   MouseScrollEvent,
+  TerminalEvent,
   TextEvent,
   WaitEvent,
 } from '../../../../../helpers/sharedInterfaces'
@@ -22,6 +23,7 @@ import AddEvent from './helpers/AddEvent.vue'
 import BrowserEventInner from './inners/BrowserEventInner.vue'
 import TextEventInner from './inners/TextEventInner.vue'
 import ClickEventInner from './inners/ClickEventInner.vue'
+import TerminalEventInner from './inners/TerminalEventInner.vue'
 const state = useMacroBuilderStore()
 defineProps<{
   event: EventUnion
@@ -65,11 +67,14 @@ defineProps<{
           v-else-if="event.type === TypeEnum.TextEvent"
           :event="event as TextEvent"
         ></TextEventInner>
-                <ClickEventInner
+        <ClickEventInner
           v-else-if="event.type === TypeEnum.ClickEvent"
           :event="event as ClickEvent"
           :idx="idx"
         ></ClickEventInner>
+        <TerminalEventInner v-else-if="event.type === TypeEnum.TerminalEvent"
+          :event="event as TerminalEvent"
+          ></TerminalEventInner>
       </div>
 
       <button @click="state.removeEvent(idx)" class="remove">❌</button>

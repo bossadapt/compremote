@@ -8,6 +8,9 @@ export enum RecieverStatus {
   ACTIVE = 2,
 }
 export enum TypeEnum {
+  //Is only ever used for making other event types and does not exist in the backend
+  Clone = -1,
+  //Directly copied from backend events
   KeyEvent = 0,
   MouseMoveEvent = 1,
   MouseButtonEvent = 2,
@@ -16,9 +19,19 @@ export enum TypeEnum {
   TextEvent = 5,
   BrowserEvent = 6,
   ClickEvent = 7,
-  //Is only ever used for making other events and does not exist in the backend
-  Clone = 8,
+  TerminalEvent = 8,
 }
+
+export class TerminalEvent {
+  id: string
+  type: TypeEnum = TypeEnum.TerminalEvent
+  commands: string[] = []
+  constructor(id: string, key?: string, commands?: string[]) {
+    this.id = id
+    if (commands !== undefined) this.commands = commands
+  }
+}
+
 export class KeyEvent {
   id: string
   type: TypeEnum = TypeEnum.KeyEvent
@@ -139,6 +152,7 @@ export type EventUnion =
   | BrowserEvent
   | TextEvent
   | ClickEvent
+  | TerminalEvent
 
 export interface Action {
   name: string

@@ -1,5 +1,6 @@
 # yoinked initally from https://github.com/george-jensen/record-and-play-pynput/blob/main/play.py
 
+import subprocess
 from typing import List
 from pynput.mouse import Button, Controller as MouseController
 from pynput.keyboard import Key, Controller as KeyboardController
@@ -37,7 +38,13 @@ def play_events(name_of_recording,number_of_plays):
                 if obj["newWindow"]:
                     webbrowser.open_new(obj["url"])
                 else:
-                    webbrowser.open_new_tab(obj["url"])                
+                    webbrowser.open_new_tab(obj["url"])
+            elif obj['type'] == TypeEnum.TerminalEvent:
+                for command in obj['commands']:
+                    try:
+                        subprocess.run(command)
+                    except:
+                        print("failed to run command:"+ command)          
             else:
                 print("x: {0}, y: {1}, action: {2}".format(obj["x"], obj["y"], obj["type"]))
                 mouse.position = (obj["x"], obj["y"])

@@ -21,9 +21,9 @@ class ToggleStatus(int, Enum):
 # change the logo
 # handle backend disconnect better from macro builder
 # handle disconnect from bridge better(bridge wont let reconnect)
+# add more sharable forms exe/deb
 
 # possible events
-# terminal
 # add a way for users from the remote app to pass limited input(may cause risk)(Variables Events?)
 # call to selenium to control a website
 # call to existing actions
@@ -36,7 +36,17 @@ class TypeEnum(int, Enum):
     WaitEvent = 4
     TextEvent = 5
     BrowserEvent = 6
-    ClickEvent = 7 
+    ClickEvent = 7
+    TerminalEvent = 8 
+
+@dataclass
+class TerminalEvent():
+    commands:List[str]
+    id:str
+    type:int = field(default=TypeEnum.TerminalEvent)    
+    def __init__(self,commands):
+        self.commands = commands
+        self.id = generateId()
 
 @dataclass
 class ClickEvent():
@@ -138,7 +148,7 @@ class WaitEvent():
     def __init__(self,time):
         self.time = time
         self.id = generateId()
-EventUnion = Union[TextEvent,BrowserEvent,KeyEvent, MouseMoveEvent,MouseButtonEvent,MouseScrollEvent, WaitEvent]
+EventUnion = Union[TextEvent,BrowserEvent,KeyEvent, MouseMoveEvent,MouseButtonEvent,MouseScrollEvent, WaitEvent, TerminalEvent]
 
 @dataclass 
 class Action():

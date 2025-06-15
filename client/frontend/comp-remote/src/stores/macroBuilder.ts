@@ -11,6 +11,7 @@ import {
   BrowserEvent,
   ClickEvent,
   WaitEvent,
+  TerminalEvent,
 } from '@/helpers/sharedInterfaces'
 import type { Action, EventUnion } from '@/helpers/sharedInterfaces'
 import isValidFilename from 'valid-filename'
@@ -240,6 +241,9 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
         break
       case TypeEnum.WaitEvent:
         newEntry = new WaitEvent(generatedId)
+        break
+      case TypeEnum.TerminalEvent:
+        newEntry = new TerminalEvent(generatedId)
         break
       case TypeEnum.Clone:
         const prev = focusedAction.value?.events[idx - 1]

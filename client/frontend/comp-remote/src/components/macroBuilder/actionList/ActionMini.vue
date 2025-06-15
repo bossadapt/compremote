@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useMacroBuilderStore } from '@/stores/macroBuilder'
-import type { Action } from '../../helpers/sharedInterfaces'
+import type { Action } from '../../../helpers/sharedInterfaces'
 let state = useMacroBuilderStore()
 defineProps<{
   action: Action | null
@@ -15,9 +15,12 @@ defineProps<{
     </div>
   </div>
   <div v-else-if="action.name === state.focusedAction?.name" class="main-mini-focused">
-    <div class="mini-contents">
+    <div class="mini-contents" >
       <div class="title-button">
         <h3 class="title-h3">{{ action.name }}</h3>
+      </div>
+      <div class="copy-button" @click="state.copyAction(action)">
+        <h3 class="copy-text">⎘</h3>
       </div>
       <div class="delete-button" @click="state.removeAction(action)">
         <h3 class="delete-text">❌</h3>
@@ -28,6 +31,9 @@ defineProps<{
     <div class="mini-contents">
       <div class="title-button" @click="state.focusedAction = action">
         <h3 class="title-h3">{{ action.name }}</h3>
+      </div>
+      <div class="copy-button"@click="state.copyAction(action)">
+        <h3 class="copy-text">⎘</h3>
       </div>
       <div class="delete-button" @click="state.removeAction(action)">
         <h3 class="delete-text">❌</h3>
@@ -68,21 +74,34 @@ defineProps<{
   height: 100%;
   cursor: pointer;
 }
+
+.copy-text{
+  color: var(--text);
+  text-align: center;
+}
 .delete-text {
   color: var(--danger);
   border: 0px;
-  font-size: 20px;
   text-align: center;
 }
+
+.copy-button,
 .delete-button {
-  width: 20%;
+  height: 100%;
+  font-size: 20px;
+  width: 10%;
   cursor: pointer;
-  border-left: 1px dashed var(--danger);
-  
   display: flex;
   align-items: center;
   justify-content: center;
 }
+.copy-button {
+  border-left: 1px dashed var(--text);
+}
+.delete-button{
+    border-left: 1px dashed var(--danger);
+}
+
 .create-text {
   border: 0px;
   font-size: 20px;

@@ -21,13 +21,13 @@ class ToggleStatus(int, Enum):
 # change the logo
 # handle backend disconnect better from macro builder
 # handle disconnect from bridge better(bridge wont let reconnect)
-# add events that use selenium to control a website
-# add events that call existing actions
-# add a terminal event
-# add a way to edit action names
-# add a way to clone existing actions
-# add a way for users from the remote app to pass limited input(may cause risk)
-# add a random click in a range(mostly so i get a random youtube video)
+
+# possible events
+# terminal
+# add a way for users from the remote app to pass limited input(may cause risk)(Variables Events?)
+# call to selenium to control a website
+# call to existing actions
+# random click in a range(mostly so i get a random youtube video)
 class TypeEnum(int, Enum):
     KeyEvent = 0
     MouseMoveEvent = 1

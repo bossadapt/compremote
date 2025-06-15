@@ -1,4 +1,4 @@
-import { ref, type Ref } from 'vue'
+import { ref, toRaw, type Ref } from 'vue'
 import { defineStore } from 'pinia'
 import {
   ToggleStatus,
@@ -80,7 +80,17 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
       saveAction(newAction, true)
     }
   }
-
+  function copyAction(existingAction: Action) {
+    let newName = existingAction.name + '_copy'
+    console.log('copy action called:' + newName)
+    if (isValidFilename(newName)) {
+      addAction({ name: newName, events: structuredClone(toRaw(existingAction.events)) })
+    } else {
+      createWarningMessage(
+        'unable to copy, name length likely too long or previous name was faulty',
+      )
+    }
+  }
   function removeAction(removedAction: Action) {
     fetch(HOSTNAME_FOR_BACKEND + '/actions/remove/', {
       method: 'DELETE',
@@ -295,6 +305,7 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
     focusedAction,
     warningMessage,
     modalContent,
+    copyAction,
     renameFocused,
     syncActions,
     createWarningMessage,

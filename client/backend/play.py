@@ -9,10 +9,37 @@ import json
 import sys
 import webbrowser
 from localTypes import EventUnion, TypeEnum, ToggleStatus
+#variables that get passed should be {'name':'variable Name','value':'variable value'}
 
-def play_events(name_of_recording,number_of_plays):
+
+def replace_all_variables(events,savedVariables,variablesGiven):
+#filters out invalid variables possibly given
+    given_dict = {v['name']: v for v in variablesGiven}
+    variables = []
+    for existingVariable in savedVariables:
+        if existingVariable['name'] in given_dict:
+            variables.append(given_dict[existingVariable['name']])
+        else:
+            variables.append(existingVariable)
+#value checks to ensure nothing fishy going on
+    for event in events:
+        if event['type'] == TypeEnum.BrowserEvent:
+            for var in variables:
+                event['url'] = event['url'].replace('#:{}:'.format(var['name']),var['value'])
+        elif event['type'] == TypeEnum.TextEvent:
+            for var in variables:
+                event['text'] = event['text'].replace('#:{}:'.format(var['name']),var['value'])
+        elif event['type'] == TypeEnum.TerminalEvent:
+            for var in variables:
+                for index, _command in enumerate(event['commands']):
+                    event['commands'][index] = event['commands'][index].replace('#:{}:'.format(var['name']),var['value'])
+
+def play_events(name_of_recording,variables,number_of_plays):
     with open(name_of_recording) as json_file:
-        data:List[EventUnion] = json.load(json_file)
+        contents = json.load(json_file)
+        data:List[EventUnion] = contents['events']
+        existingVariables:List[str] = contents['variables']
+        replace_all_variables(data,existingVariables,variables)
     special_keys = {"Key.shift": Key.shift, "Key.tab": Key.tab, "Key.caps_lock": Key.caps_lock, "Key.ctrl": Key.ctrl, "Key.alt": Key.alt, "Key.cmd": Key.cmd, "Key.cmd_r": Key.cmd_r, "Key.alt_r": Key.alt_r, "Key.ctrl_r": Key.ctrl_r, "Key.shift_r": Key.shift_r, "Key.enter": Key.enter, "Key.backspace": Key.backspace, "Key.f19": Key.f19, "Key.f18": Key.f18, "Key.f17": Key.f17, "Key.f16": Key.f16, "Key.f15": Key.f15, "Key.f14": Key.f14, "Key.f13": Key.f13, "Key.media_volume_up": Key.media_volume_up, "Key.media_volume_down": Key.media_volume_down, "Key.media_volume_mute": Key.media_volume_mute, "Key.media_play_pause": Key.media_play_pause, "Key.f6": Key.f6, "Key.f5": Key.f5, "Key.right": Key.right, "Key.down": Key.down, "Key.left": Key.left, "Key.up": Key.up, "Key.page_up": Key.page_up, "Key.page_down": Key.page_down, "Key.home": Key.home, "Key.end": Key.end, "Key.delete": Key.delete, "Key.space": Key.space}
     buttons = { "Button.left": Button.left,"Button.right": Button.right,"Button.middle": Button.middle,"Button.button8": Button.button8,"Button.button9": Button.button9,"Button.button10": Button.button10,"Button.button11": Button.button11,"Button.button12": Button.button12,"Button.button13": Button.button13,"Button.button14": Button.button14,"Button.button15": Button.button15,"Button.button16": Button.button16,"Button.button17": Button.button17,"Button.button18": Button.button18,"Button.button19": Button.button19,"Button.button20": Button.button20,"Button.button21": Button.button21,"Button.button22": Button.button22,"Button.button23": Button.button23,"Button.button24": Button.button24,"Button.button25": Button.button25,"Button.button26": Button.button26,"Button.button27": Button.button27,"Button.button28": Button.button28,"Button.button29": Button.button29,"Button.button30": Button.button30,"Button.scroll_down": Button.scroll_down,"Button.scroll_left": Button.scroll_left,"Button.scroll_right": Button.scroll_right,"Button.scroll_up": Button.scroll_up}    
     mouse = MouseController()

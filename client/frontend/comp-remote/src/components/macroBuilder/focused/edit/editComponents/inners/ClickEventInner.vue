@@ -17,7 +17,7 @@ defineProps<{
     <Position :x="event.x" :y="event.y" :idx="idx"></Position>
     <div class="section">
         <h3>Click Count: </h3>
-        <input type="number" v-model="event.clickCount"> {{ event.clickCount }}</input>
+        <input type="number" v-model="event.clickCount"/>
     </div>
   </div>
 </template>

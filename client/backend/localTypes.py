@@ -142,7 +142,6 @@ class MouseScrollEvent():
 class WaitEvent():
     time:float
     id:str
-
     type : int = field(default=TypeEnum.WaitEvent)
 
     def __init__(self,time):
@@ -150,7 +149,13 @@ class WaitEvent():
         self.id = generateId()
 EventUnion = Union[TextEvent,BrowserEvent,KeyEvent, MouseMoveEvent,MouseButtonEvent,MouseScrollEvent, WaitEvent, TerminalEvent]
 
+@dataclass
+class Variable():
+    name:str
+    defaultValue:str
+    
 @dataclass 
 class Action():
     name:str
+    variables: List[str]
     events: List[EventUnion]

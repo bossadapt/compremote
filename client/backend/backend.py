@@ -49,16 +49,18 @@ def record():
 def play():
     data = request.get_json()
     action_name = data['name']
-    play_events('actions/{}.txt'.format(action_name),1)
+    play_events('actions/{}.txt'.format(action_name),[],1)
     return {"status": "finished"}
 
 @app.route("/actions/save/", methods=['PATCH'])
 def saveAction():
     data = request.get_json()
+    print(data)
     action_name = data['name']
     events = data['events']
+    variables = data['variables']
     with open('actions/{}.txt'.format(action_name), 'w') as outfile:
-                json.dump(events, outfile)
+                json.dump({"variables":variables,"events":events}, outfile)
     return {"status": "finished"}
 
 @app.route("/actions/rename/", methods=['PATCH'])
@@ -82,15 +84,18 @@ def getKey():
 @app.route("/getCord")
 def getCord():
     return get_cord()
+
 @app.route("/getButton")
 def getButton():
      return get_next_button()
+
 @app.route("/actions")
 def getActions():
     dirList = os.listdir("./actions")
     actions = []
-    for dir in dirList:
-         with open("./actions/{}".format(dir),'r') as file:
-            if(dir != ".gitkeep"):
-                actions.append({"name":dir[:-4],"events":json.load(file)})
+    for fileNameWithExt in dirList:
+        if(fileNameWithExt != ".gitkeep"):
+             with open("./actions/{}".format(fileNameWithExt),'r') as file:
+                 fileContents =  json.load(file)
+                 actions.append({"name":fileNameWithExt[:-4],"variables":fileContents["variables"],"events":fileContents["events"]})
     return actions

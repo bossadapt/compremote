@@ -143,6 +143,14 @@ export class WaitEvent {
     if (time !== undefined) this.time = time
   }
 }
+export class Variable {
+  name: string = ''
+  value: string = ''
+  constructor(name?: string, defaultValue?: string) {
+    if (name) this.name = name
+    if (defaultValue) this.value = defaultValue
+  }
+}
 export type EventUnion =
   | KeyEvent
   | MouseButtonEvent
@@ -156,5 +164,6 @@ export type EventUnion =
 
 export interface Action {
   name: string
+  variables: Variable[]
   events: EventUnion[]
 }

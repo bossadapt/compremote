@@ -1,27 +1,23 @@
 <script setup lang="ts">
+import { useStateStore } from '@/stores/state';
 import { ref } from 'vue'
-
-defineProps<{
-  actions: string[]
-  playFunction: (action: string) => void
-  getActionsFunction: () => void
-}>()
+const state = useStateStore()
 const search = ref('')
 </script>
 <template>
     <div class="container">
   <div class="header">
-    <button class="refresh" @click="getActionsFunction()">Refresh Actions</button>
+    <button class="refresh" @click="state.getActions()">Refresh Actions</button>
     <input class="search" type="text" v-model="search" placeholder="search for items here" />
   </div>
   <div class="cards">
     <button
-      v-for="action in actions.filter((val) => {
-        return val.includes(search)
+      v-for="action in state.actions.filter((val) => {
+        return val.name.includes(search)
       })"
-      @click="playFunction(action)"
+      @click="state.attemptPlay(action)"
     >
-      {{ action }}
+      {{ action.name }}
     </button>
   </div>
   </div>

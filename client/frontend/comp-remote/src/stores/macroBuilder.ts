@@ -13,7 +13,7 @@ import {
   WaitEvent,
   TerminalEvent,
 } from '@/helpers/sharedInterfaces'
-import type { Action, EventUnion } from '@/helpers/sharedInterfaces'
+import type { Action, EventUnion, Variable } from '@/helpers/sharedInterfaces'
 import isValidFilename from 'valid-filename'
 export const useMacroBuilderStore = defineStore('macroBuilder', () => {
   const HOSTNAME_FOR_BACKEND = 'http://localhost:3334'
@@ -36,7 +36,7 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
           createWarningMessage('failed to pull reach backend to record')
           throw new Error(`response status: ${response.status}`)
         }
-        let newAction: Action = { name, events: await response.json() }
+        let newAction: Action = { name, variables: [], events: await response.json() }
         console.log(newAction.events)
         addAction(newAction)
       } catch (error) {
@@ -85,7 +85,11 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
     let newName = existingAction.name + '_copy'
     console.log('copy action called:' + newName)
     if (isValidFilename(newName)) {
-      addAction({ name: newName, events: structuredClone(toRaw(existingAction.events)) })
+      addAction({
+        name: newName,
+        variables: structuredClone(toRaw(existingAction.variables)),
+        events: structuredClone(toRaw(existingAction.events)),
+      })
     } else {
       createWarningMessage(
         'unable to copy, name length likely too long or previous name was faulty',
@@ -126,7 +130,92 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
   function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms))
   }
+  ///Returns true if can be converted to number
+  function input2number(obj: any, key: string, defaultValue?: number, lowerBound?: number) {
+    if (obj[key] === '') {
+      obj[key] = defaultValue
+    } else {
+      try {
+        obj[key] = Number(obj[key])
+        if (lowerBound && obj[key] < lowerBound) {
+          return false
+        }
+      } catch (error) {
+        return false
+      }
+    }
+    return true
+  }
+  ///needed to use any type to correct the string version of int values
+  function validateEventValues(events: any[]) {
+    console.log('validation of events called')
+    for (let i = 0; i < events.length; i++) {
+      let current = events[i]
+      console.log(current)
+
+      switch (current.type) {
+        case TypeEnum.MouseScrollEvent: {
+          if (!input2number(current, 'horizontal_direction', 0)) {
+            createWarningMessage(
+              'Invalid Horizontal input for scroll event(event #' + (i + 1) + ')',
+            )
+            return false
+          }
+          if (!input2number(current, 'vertical_direction', 0)) {
+            createWarningMessage('Invalid Vertical input for scroll event(event #' + (i + 1) + ')')
+            return false
+          }
+          break
+        }
+        case TypeEnum.WaitEvent: {
+          if (!input2number(current, 'time', 0, 0)) {
+            createWarningMessage('Invalid Time for wait event(event #' + (i + 1) + ')')
+            return false
+          }
+          break
+        }
+        case TypeEnum.ClickEvent: {
+          if (!input2number(current, 'clickCount', 1, 1)) {
+            createWarningMessage('Invalid Click Count for click event(event #' + (i + 1) + ')')
+            return false
+          }
+          break
+        }
+      }
+    }
+    return true
+  }
+  function validateVariables(variables: Variable[]) {
+    //TODO: add validation on default values if need be
+    console.log('validate variables called')
+    let variablesSet = new Set<string>()
+    for (let i = 0; i < variables.length; i++) {
+      let current = variables[i].name.trim()
+      variables[i].name = current
+      console.log(current)
+      if (current !== '' && /^[A-Za-z0-9\s]+$/.test(current)) {
+        if (!variablesSet.has(current)) {
+          variablesSet.add(current)
+        } else {
+          createWarningMessage('Duplicate Variable Names not allowed')
+          return false
+        }
+      } else {
+        createWarningMessage('Variable name invalid, either empty or contains special characters')
+        return false
+      }
+    }
+    return true
+  }
   function saveAction(action2save: Action, isNew: boolean) {
+    if (
+      !isNew &&
+      (!validateVariables(action2save.variables) || !validateEventValues(action2save.events))
+    ) {
+      console.log('validation failed')
+      return
+    }
+
     fetch(HOSTNAME_FOR_BACKEND + '/actions/save/', {
       method: 'PATCH',
       headers: {
@@ -282,11 +371,11 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
       createWarningMessage('new name is invalid or focused action is not available')
     }
   }
-  function playFocused() {
+  async function playFocused() {
     console.log('Play focused called')
     if (focusedAction.value != null) {
       console.log('focused was not null')
-      fetch(HOSTNAME_FOR_BACKEND + '/actions/play/', {
+      await fetch(HOSTNAME_FOR_BACKEND + '/actions/play/', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -294,10 +383,15 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
         body: JSON.stringify({ name: focusedAction.value.name }),
       }).then((req) => {
         if (!req.ok) {
+          console.log('backend failed')
+          console.log(req)
           createWarningMessage('Failed to play from backend')
+        } else {
+          console.log('fetch resolved')
         }
       })
     } else {
+      console.trace()
       createWarningMessage('cannot play when there is no focus')
     }
   }

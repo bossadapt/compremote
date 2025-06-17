@@ -1,17 +1,15 @@
 <script setup lang="ts">
+import { useStateStore } from '@/stores/state';
 import { onMounted, ref, type Ref } from 'vue'
 const roomKey: Ref<string> = ref('')
-
-const { attemptLogIn } = defineProps<{
-  attemptLogIn: (roomKey: string) => void
-}>()
+const state = useStateStore()
 </script>
 <template>
   <div class="main-container">
     <div class="contents">
       <h1 class="header">Connect</h1>
       <input type="text" v-model="roomKey" placeholder="roomkey ex:sdlkfj3i23@#$" />
-      <button @click="attemptLogIn(roomKey)">Connect to Reciever</button>
+      <button @click="state.attemptLogIn(roomKey)">Connect to Reciever</button>
     </div>
   </div>
 </template>

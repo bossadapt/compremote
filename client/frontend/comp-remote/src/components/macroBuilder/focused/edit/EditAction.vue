@@ -3,8 +3,18 @@ import { useMacroBuilderStore } from '@/stores/macroBuilder'
 import AddEvent from './editComponents/helpers/AddEvent.vue'
 import EditEntryContainer from './editComponents/EditEntryContainer.vue'
 import draggable from 'vuedraggable'
+import VariablesContainer from './editComponents/VariablesContainer.vue'
 import { TypeEnum } from '@/helpers/sharedInterfaces'
+import { onMounted } from 'vue'
 let state = useMacroBuilderStore()
+function handleClick() {
+  console.log('clicked');
+  state.playFocused();
+}
+
+onMounted(() => {
+  console.log('Component mounted');
+});
 </script>
 <template>
   <div class="focus-main-header">
@@ -15,22 +25,20 @@ let state = useMacroBuilderStore()
     >
       {{ state.focusedAction!.name }}
     </h1>
-    <button
+    <!-- for some reason this needs to be a div or play focused gets called 13 times, blame vue -->
+    <div
       class="save-button"
+      type="button"
       @click="state.playFocused()"
       style="background-color: var(--primary); color: var(--secondary)"
     >
       Play Saved Version
-    </button>
-    <button class="save-button" @click="state.saveAction(state.focusedAction!,false)">Save</button>
+    </div>
+    <button class="save-button" @click="state.saveAction(state.focusedAction!, false)">Save</button>
   </div>
   <div class="focus-hr"></div>
   <div class="edit-list-container">
-    <AddEvent
-      :idx="0"
-      :type-param="TypeEnum.TextEvent"
-      style="margin-top: 2%; margin-left: 5%; margin-right: 2%"
-    ></AddEvent>
+    <VariablesContainer />
     <draggable
       v-if="state.focusedAction && state.focusedAction.events"
       tag="ul"
@@ -40,16 +48,29 @@ let state = useMacroBuilderStore()
     >
       <template #item="{ element, index }">
         <li :key="element.id">
-          <EditEntryContainer :event="element" :idx="index"></EditEntryContainer>
+          <EditEntryContainer :event="element" :idx="index" />
         </li>
       </template>
     </draggable>
   </div>
 </template>
 <style>
+.save-button {
+  cursor: pointer;
+  flex: 0 0 10%;
+  background-color: var(--secondary);
+  border: 0px;
+  font-size: 20px;
+  color: var(--primary);
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
 .edit-list-container {
   flex: 1 1 0;
   overflow-y: auto;
-  min-height: 0; 
+  min-height: 0;
 }
 </style>

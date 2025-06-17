@@ -165,7 +165,7 @@ apiApp.get("/actions", function (req, res) { return __awaiter(void 0, void 0, vo
     });
 }); });
 apiApp.patch("/play/", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var token, user, activeBackend, name_1, message, err_3, err_4;
+    var token, user, activeBackend, action, message, err_3, err_4;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -184,12 +184,16 @@ apiApp.patch("/play/", function (req, res) { return __awaiter(void 0, void 0, vo
                 return [2 /*return*/, res.status(401).json({ error: "backend client no longer exists" })];
             case 2:
                 try {
-                    name_1 = req.body.name;
-                    if (name_1 == undefined) {
+                    action = req.body.action;
+                    console.log("proxying action:", action);
+                    if (action.name == undefined) {
                         console.log("User attempted to play without action included");
                         return [2 /*return*/, res.status(400).json({ error: "action to play not included" })];
                     }
-                    (_a = activeBackend.webSocket) === null || _a === void 0 ? void 0 : _a.send(JSON.stringify({ req: "play", action: name_1 }));
+                    if (action.variables == undefined) {
+                        action.variables = [];
+                    }
+                    (_a = activeBackend.webSocket) === null || _a === void 0 ? void 0 : _a.send(JSON.stringify({ req: "play", action: action }));
                 }
                 catch (err) {
                     return [2 /*return*/, res.status(400).json({ error: "error reading action request" })];

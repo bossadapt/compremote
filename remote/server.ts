@@ -154,14 +154,16 @@ apiApp.patch("/play/", async (req, res): Promise<any> => {
       return res.status(401).json({ error: "backend client no longer exists" });
     } else {
       try {
-        let name = req.body.name;
-        if (name == undefined) {
+        let action = req.body.action;
+        console.log("proxying action:", action);
+        if (action.name == undefined) {
           console.log("User attempted to play without action included");
           return res.status(400).json({ error: "action to play not included" });
         }
-        activeBackend.webSocket?.send(
-          JSON.stringify({ req: "play", action: name })
-        );
+        if (action.variables == undefined) {
+          action.variables = [];
+        }
+        activeBackend.webSocket?.send(JSON.stringify({ req: "play", action }));
       } catch (err) {
         return res.status(400).json({ error: "error reading action request" });
       }

@@ -91,15 +91,20 @@ class RecieverClient:
                         actions = []
                         for dir in dirList:
                             if(dir != ".gitkeep"):
-                                actions.append(dir[:-4])
-                        self.sendUpdate2Frontend({'type':"newRequest",'request':{'type':'actions','desc':"actions sent: {}".format(", ".join(actions))}})
+                                with open("./actions/{}".format(dir),'r') as file:
+                                    fileContents =  json.load(file)
+                                    actions.append({'name':dir[:-4], 'variables' : fileContents["variables"]})
+                        
+                        self.sendUpdate2Frontend({'type':"newRequest",'request':{'type':'actions','desc':"actions sent: {}".format(", ".join([item["name"] for item in actions]))}})
+                        
                         websocket.send(json.dumps(actions))
                         print("actions list sent to server.") 
                     elif message["req"] == "play":
                         print("Server requested play of {}".format(message["action"]))
+                        action = message["action"]
                         self.sendUpdate2Frontend({'type':"newRequest",'request':{'type':'play','desc':"requested play of {}".format(message["action"])}})
                         try:
-                            play_events('./actions/{}.txt'.format(message["action"]),1)
+                            play_events('./actions/{}.txt'.format(action['name']),action["variables"],1)
                             websocket.send("finished")
                         except Exception as e:
                             print(e)

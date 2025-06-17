@@ -39,14 +39,7 @@ let state = useMacroBuilderStore()
   margin-top: 1%;
   overflow-wrap: break-word;
 }
-.save-button {
-  cursor: pointer;
-  flex: 0 0 10%;
-  background-color: var(--secondary);
-  border: 0px;
-  font-size: 20px;
-  color: var(--primary);
-}
+
 .focus-hr {
   height: 9px;
   width: 100%;

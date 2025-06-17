@@ -13,7 +13,7 @@ const inputName: Ref<string> = ref('')
     <h2>Name</h2>
     <input v-model="inputName" placeholder="name required" />
     <button v-on:click="state.createActionByRecording(inputName)">Start with recording</button>
-    <button v-on:click="state.addAction({ name: inputName, events: [] })">Start Empty</button>
+    <button v-on:click="state.addAction({ name: inputName,variables:[], events: [] })">Start Empty</button>
   </div>
 </template>
 <style scoped>

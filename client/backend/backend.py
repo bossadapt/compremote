@@ -16,7 +16,7 @@ app = Flask(__name__)
 CORS(app)
 #initialize frontend
 process = subprocess.Popen(
-    ["npm", "run", "dev"],
+    ["serve", "-s", "dist"],
     cwd="./../frontend/comp-remote"
 )
 

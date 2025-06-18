@@ -34,7 +34,9 @@ The macro remote for those of us who dont want to get out of our chair to repeat
 example install all on debian:
 
 ```
-sudo apt install -y npm git just python3.12-venv build-essential python3-dev;
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt install -y --fix-missing npm git just python3.12-venv build-essential python3-dev;
 ```
 
 ## How to (after requirments are fufilled):

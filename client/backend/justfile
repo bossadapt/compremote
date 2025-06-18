@@ -1,4 +1,6 @@
-run:
-    sudo apt install python3.12-venv
+init:
     python3 -m venv venv
-    . venv/bin/activate && pip install Flask flask_cors websockets pynput && flask --app backend run -p 3334
+    . venv/bin/activate && pip install -r requirements.txt
+    cd ./../frontend/comp-remote/ && npm install
+run:
+    . venv/bin/activate && flask --app backend run -p 3334

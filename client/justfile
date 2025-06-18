@@ -1,2 +1,4 @@
+init:
+    cd backend && just init
 run:
     cd backend && just run

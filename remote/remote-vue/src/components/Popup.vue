@@ -7,11 +7,11 @@ const state = useStateStore()
   <div v-if="state.focusedAction !== null" class="modal">
     <div class="modal-content">
       <h2>Choose Variables</h2>
-      <div v-for="varr in state.focusedAction.variables">
-        <h4>{{ varr.name }}</h4>
-        <input type="text" v-model="varr.value" />
+      <div class="var-container" v-for="varr in state.focusedAction.variables">
+        <h2 class="var-title">{{ varr.name }}</h2>
+        <input class="var-input" type="text" v-model="varr.value" />
       </div>
-      <div>
+      <div class="popup-button-container">
         <button class="content-buttons" @click="state.focusedAction = null">Cancel</button>
         <button class="content-buttons" @click="state.play(state.focusedAction)">Play</button>
       </div>
@@ -19,6 +19,18 @@ const state = useStateStore()
   </div>
 </template>
 <style scoped>
+.var-container{
+ width: 100%;
+ margin-bottom: 10px;
+ margin-top: 0px;
+}
+.var-title{
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+.var-input{
+width: 100%;
+}
 /* The Modal (background) */
 .modal {
   display: block;
@@ -37,6 +49,8 @@ const state = useStateStore()
 .modal-content {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   background-color: black;
   color: white;
   margin: 15% auto;
@@ -48,5 +62,8 @@ const state = useStateStore()
   width: 50%;
   background-color: black;
   color: white;
+}
+.popup-button-container{
+  width: 100%;
 }
 </style>

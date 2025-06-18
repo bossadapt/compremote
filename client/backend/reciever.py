@@ -32,6 +32,7 @@ class RecieverServer:
             while True:
                 message = await websocket.recv()
                 message = json.loads(message)
+                print("server recved:",message)
                 if message["req"] == "start":
                     print("start called on server")
                     self.reciever_client.start()
@@ -138,6 +139,6 @@ class RecieverClient:
         if self.thread:
             self.thread.join()
 #TODO: make it possible to run reciever client without frontend again
-#if __name__ == "__main__":
+# if __name__ == "__main__":
 #    client = RecieverClient()
-#    client.run()
+#    client.start()

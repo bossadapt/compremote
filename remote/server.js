@@ -96,8 +96,21 @@ apiApp.use(cookieSession({
     secret: process.env.SESSION_SECRET,
     maxAge: 24 * 60 * 60 * 1000
 }));
+var allowedOrigins = ["http://localhost:5174", "https://bossadapt.org"];
 apiApp.use(express.json());
-apiApp.use(cors({ origin: "http://bossadapt.org/remote", credentials: true }));
+apiApp.use(cors({
+    origin: function (origin, callback) {
+        if (!origin)
+            return callback(null, true);
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+        else {
+            return callback(new Error("Not allowed by CORS"));
+        }
+    },
+    credentials: true
+}));
 apiApp.post("/login", function (req, res) {
     var _a;
     // Authenticate user here...

@@ -186,7 +186,6 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
     return true
   }
   function validateVariables(variables: Variable[]) {
-    //TODO: add validation on default values if need be
     console.log('validate variables called')
     let variablesSet = new Set<string>()
     for (let i = 0; i < variables.length; i++) {

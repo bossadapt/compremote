@@ -9,6 +9,7 @@ const state = useMacroBuilderStore()
       <div class="main-edit-container">
           <div class="section">
             <h3>Variable Names to prompt user:</h3>
+            <div>
             <table>
               <thead>
                 <tr>
@@ -29,18 +30,28 @@ const state = useMacroBuilderStore()
           </table>
 
             <button
+            class="add-var-button"
               @click="
                 state.focusedAction?.variables.push(new Variable())
               "
             >
-              add Var
+              Add Variable
             </button>
+          </div>
+
           </div>
         </div>
       <AddEvent :idx="0" :type-param="TypeEnum.TextEvent" style="margin-top: 2%" />
     </div>
 </template>
 <style scoped>
+.add-var-button{
+  border: white 1px;
+  color: var(--text);
+  background-color: var(--secondary);
+  border-style: groove;
+  width: 100%;
+}
 .delete-var-button{
   color: var(--danger);
   background-color: var(--background);

@@ -24,12 +24,13 @@ def trigger_mouse_event():
 
 def combine_waits_and_events() -> List[EventUnion]:
     output = []
-    output.append(storage[0][0])
-    for index in range(1,len(storage)):
-        timeDiff = storage[index][1]-storage[index-1][1]
-        if timeDiff > 0:
-            output.append(WaitEvent(storage[index][1]-storage[index-1][1]))
-        output.append(storage[index][0])
+    if len(storage) > 0:
+        output.append(storage[0][0])
+        for index in range(1,len(storage)):
+            timeDiff = storage[index][1]-storage[index-1][1]
+            if timeDiff > 0:
+                output.append(WaitEvent(storage[index][1]-storage[index-1][1]))
+            output.append(storage[index][0])
     return output
 def on_press(key):
     global k_listener, m_listener
@@ -50,6 +51,7 @@ def on_release(key):
 
 def on_move(x, y):
     global lastMoveTime
+    #print("move")
     if (record_all) == True:
         if len(storage) >= 1:
             if type(storage[-1]) is MouseMoveEvent:
@@ -75,15 +77,20 @@ def on_move(x, y):
                     lastMoveTime = time.time()
 
 def on_click(x, y, button, pressed):
+    print("click")
     if(pressed):
-        storage.append((MouseButtonEvent(ToggleStatus.PRESSED,str(button),x,y),time.time()))
+        storage.append((MouseMoveEvent(x,y),time.time()))
+        storage.append((MouseButtonEvent(ToggleStatus.PRESSED,str(button)),time.time()))
     else:
-        storage.append((MouseButtonEvent(ToggleStatus.RELEASED,str(button),x,y),time.time()))
+        storage.append((MouseMoveEvent(x,y),time.time()))
+        storage.append((MouseButtonEvent(ToggleStatus.RELEASED,str(button)),time.time()))
 
 
 
 def on_scroll(x, y, dx, dy):
-    storage.append((MouseScrollEvent(dy,dx,x,y),time.time()))
+    print("click")
+    storage.append((MouseMoveEvent(x,y),time.time()))
+    storage.append((MouseScrollEvent(dy,dx),time.time()))
 
 # Collect events from keyboard and mouse until esc
 def record_events() -> List[EventUnion]:

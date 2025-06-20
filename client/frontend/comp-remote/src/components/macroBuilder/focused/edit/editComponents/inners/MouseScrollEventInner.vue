@@ -17,7 +17,6 @@ defineProps<{
       <input type="number" v-model="event.horizontal_direction" />
     </div>
     <div class="section">
-      <Position :x="event.x" :y="event.y" :idx="idx"></Position>
     </div>
   </div>
 </template>

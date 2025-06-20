@@ -20,6 +20,7 @@ export enum TypeEnum {
   BrowserEvent = 6,
   ClickEvent = 7,
   TerminalEvent = 8,
+  RangeMouseMoveEvent = 9,
 }
 
 export class TerminalEvent {
@@ -50,15 +51,11 @@ export class MouseButtonEvent {
   type: TypeEnum = TypeEnum.MouseButtonEvent
   toggle: ToggleStatus = ToggleStatus.RELEASED
   button: string = 'Button.left'
-  x: number = 0
-  y: number = 0
 
-  constructor(id: string, button?: string, toggle?: ToggleStatus, x?: number, y?: number) {
+  constructor(id: string, button?: string, toggle?: ToggleStatus) {
     this.id = id
     if (button !== undefined) this.button = button
     if (toggle !== undefined) this.toggle = toggle
-    if (x !== undefined) this.x = x
-    if (y !== undefined) this.y = y
   }
 }
 
@@ -80,15 +77,11 @@ export class MouseScrollEvent {
   type: TypeEnum = TypeEnum.MouseScrollEvent
   vertical_direction: number = 0
   horizontal_direction: number = 0
-  x: number = 0
-  y: number = 0
 
-  constructor(id: string, vDir?: number, hDir?: number, x?: number, y?: number) {
+  constructor(id: string, vDir?: number, hDir?: number) {
     this.id = id
     if (vDir !== undefined) this.vertical_direction = vDir
     if (hDir !== undefined) this.horizontal_direction = hDir
-    if (x !== undefined) this.x = x
-    if (y !== undefined) this.y = y
   }
 }
 
@@ -120,15 +113,11 @@ export class ClickEvent {
   id: string
   type: TypeEnum = TypeEnum.ClickEvent
   button: string = 'Button.left'
-  x: number = 0
-  y: number = 0
   clickCount: number = 1
 
-  constructor(id: string, button?: string, x?: number, y?: number, clickCount?: number) {
+  constructor(id: string, button?: string, clickCount?: number) {
     this.id = id
     if (button !== undefined) this.button = button
-    if (x !== undefined) this.x = x
-    if (y !== undefined) this.y = y
     if (clickCount !== undefined) this.clickCount = clickCount
   }
 }
@@ -143,6 +132,23 @@ export class WaitEvent {
     if (time !== undefined) this.time = time
   }
 }
+export class RangeMouseMoveEvent {
+  id: string
+  type: TypeEnum = TypeEnum.RangeMouseMoveEvent
+  x1: number = 0
+  y1: number = 0
+  x2: number = 0
+  y2: number = 0
+
+  constructor(id: string, x1?: number, y1?: number, x2?: number, y2?: number) {
+    this.id = id
+    if (x1 !== undefined) this.x1 = x1
+    if (y1 !== undefined) this.y1 = y1
+    if (x2 !== undefined) this.x2 = x2
+    if (y2 !== undefined) this.y2 = y2
+  }
+}
+
 export enum VariableEnum {
   RawText = 0,
   EnumText = 1,
@@ -168,6 +174,7 @@ export type EventUnion =
   | TextEvent
   | ClickEvent
   | TerminalEvent
+  | RangeMouseMoveEvent
 
 export interface Action {
   name: string

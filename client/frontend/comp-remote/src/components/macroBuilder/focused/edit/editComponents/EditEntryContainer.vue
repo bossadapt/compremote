@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { TypeEnum } from '../../../../../helpers/sharedInterfaces'
 import type {
   BrowserEvent,
@@ -9,6 +8,7 @@ import type {
   MouseButtonEvent,
   MouseMoveEvent,
   MouseScrollEvent,
+  RangeMouseMoveEvent,
   TerminalEvent,
   TextEvent,
   WaitEvent,
@@ -24,6 +24,7 @@ import BrowserEventInner from './inners/BrowserEventInner.vue'
 import TextEventInner from './inners/TextEventInner.vue'
 import ClickEventInner from './inners/ClickEventInner.vue'
 import TerminalEventInner from './inners/TerminalEventInner.vue'
+import RangeMouseMoveEventInner from './inners/RangeMouseMoveEventInner.vue'
 const state = useMacroBuilderStore()
 defineProps<{
   event: EventUnion
@@ -72,9 +73,14 @@ defineProps<{
           :event="event as ClickEvent"
           :idx="idx"
         ></ClickEventInner>
-        <TerminalEventInner v-else-if="event.type === TypeEnum.TerminalEvent"
+        <TerminalEventInner
+          v-else-if="event.type === TypeEnum.TerminalEvent"
           :event="event as TerminalEvent"
-          ></TerminalEventInner>
+        ></TerminalEventInner>
+        <RangeMouseMoveEventInner
+          v-else-if="event.type === TypeEnum.RangeMouseMoveEvent"
+          :event="event as RangeMouseMoveEvent"
+        ></RangeMouseMoveEventInner>
       </div>
 
       <button @click="state.removeEvent(idx)" class="remove">❌</button>

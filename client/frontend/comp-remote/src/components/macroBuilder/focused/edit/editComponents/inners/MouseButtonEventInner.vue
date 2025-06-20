@@ -21,7 +21,6 @@ defineProps<{
     <div class="section">
       <h3>button:</h3>
       <button @click="state.getButton(idx)">{{ event.button }}</button>
-      <Position :x="event.x" :y="event.y" :idx="idx"></Position>
     </div>
   </div>
 </template>

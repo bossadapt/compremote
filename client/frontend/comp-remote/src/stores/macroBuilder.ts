@@ -12,6 +12,7 @@ import {
   ClickEvent,
   WaitEvent,
   TerminalEvent,
+  RangeMouseMoveEvent,
 } from '@/helpers/sharedInterfaces'
 import type { Action, EventUnion, Variable } from '@/helpers/sharedInterfaces'
 import isValidFilename from 'valid-filename'
@@ -278,7 +279,8 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
     }
     isWaitingForInput.value = false
   }
-  async function getCord(idx: number) {
+  /// gets cord of next click, example calling : getCord('ldkfjosialsdkf','x1','y1')
+  async function getCord(eventId: string, xId: string, yId: string) {
     isWaitingForInput.value = true
     waitingForInputText.value =
       'Waiting for cord(press left mouse button to record position for event)'
@@ -288,9 +290,14 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
       await fetch(HOSTNAME_FOR_BACKEND + '/getCord').then(async (req) => {
         if (req.ok) {
           let data = await req.json()
-          if (focusedAction.value?.events[idx]) {
-            ;(focusedAction.value.events[idx] as any).x = data.x
-            ;(focusedAction.value.events[idx] as any).y = data.y
+          let actionToModify = focusedAction.value?.events.find((event) => {
+            return event.id === eventId
+          })
+          if (actionToModify) {
+            ;(actionToModify as any)[xId] = data.x
+            ;(actionToModify as any)[yId] = data.y
+          } else {
+            createWarningMessage('unable to apply cord to event')
           }
         } else {
           createWarningMessage('Failed to get cord from backend')
@@ -334,6 +341,9 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
         break
       case TypeEnum.TerminalEvent:
         newEntry = new TerminalEvent(generatedId)
+        break
+      case TypeEnum.RangeMouseMoveEvent:
+        newEntry = new RangeMouseMoveEvent(generatedId)
         break
       case TypeEnum.Clone:
         const prev = focusedAction.value?.events[idx - 1]

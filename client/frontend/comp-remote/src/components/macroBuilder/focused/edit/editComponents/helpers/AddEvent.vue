@@ -15,6 +15,7 @@ let typeToAddAfter = ref(props.typeParam)
       <option :value="TypeEnum.KeyEvent">Key Event</option>
       <option :value="TypeEnum.MouseButtonEvent">Mouse Button Event</option>
       <option :value="TypeEnum.MouseMoveEvent">Mouse Move Event</option>
+      <option :value="TypeEnum.RangeMouseMoveEvent">Range Mouse Move Event</option>
       <option :value="TypeEnum.MouseScrollEvent">Mouse Scroll Event</option>
       <option :value="TypeEnum.WaitEvent">Wait Event</option>
       <option :value="TypeEnum.BrowserEvent">Browser Event</option>

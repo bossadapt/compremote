@@ -14,7 +14,6 @@ defineProps<{
       <h3>Button:</h3>
       <button @click="state.getButton(idx)">{{ event.button }}</button>
     </div>
-    <Position :x="event.x" :y="event.y" :idx="idx"></Position>
     <div class="section">
         <h3>Click Count: </h3>
         <input type="number" v-model="event.clickCount"/>

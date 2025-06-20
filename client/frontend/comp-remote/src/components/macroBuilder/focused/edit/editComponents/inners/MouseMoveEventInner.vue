@@ -9,7 +9,7 @@ defineProps<{
 <template>
   <div class="inner">
     <div class="section">
-      <Position :x="event.x" :y="event.y" :idx="idx"></Position>
+      <Position :event="event" x-id="x" y-id="y" ></Position>
     </div>
   </div>
 </template>

@@ -7,6 +7,7 @@ from pynput.keyboard import Key, Controller as KeyboardController
 import time
 import json
 import sys
+import random
 import webbrowser
 from localTypes import EventUnion, TypeEnum, ToggleStatus, VariableEnum
 #variables that get passed should be {'name':'variable Name','value':'variable value'}
@@ -66,6 +67,7 @@ def play_events(name_of_recording,variables,number_of_plays):
             print("NEW OBJ: " + str(obj))
             if obj["type"] == TypeEnum.WaitEvent:
                 time.sleep(obj["time"])
+
             elif obj["type"] == TypeEnum.KeyEvent:
                 #keyboard actions
                 key = obj["key"] if 'Key.' not in obj["key"] else special_keys[obj["key"]]
@@ -74,33 +76,43 @@ def play_events(name_of_recording,variables,number_of_plays):
                     keyboard.press(key)
                 else:
                     keyboard.release(key)
+
             elif obj["type"] == TypeEnum.TextEvent:
                 keyboard.type(obj["text"])
+
             elif obj["type"] == TypeEnum.BrowserEvent:
                 if obj["newWindow"]:
                     webbrowser.open_new(obj["url"])
                 else:
                     webbrowser.open_new_tab(obj["url"])
+
             elif obj['type'] == TypeEnum.TerminalEvent:
                 for command in obj['commands']:
                     try:
                         subprocess.run(command)
                     except:
-                        print("failed to run command:"+ command)          
-            else:
-                print("x: {0}, y: {1}, action: {2}".format(obj["x"], obj["y"], obj["type"]))
+                        print("failed to run command:"+ command)  
+
+            elif obj['type'] == TypeEnum.MouseMoveEvent:
                 mouse.position = (obj["x"], obj["y"])
-                #added to allow it to get into position before performing actions
+                time.sleep(0.01)   
+                             
+            elif obj['type'] == TypeEnum.RangeMouseMoveEvent:
+                randX = random.randint(obj['x1'],obj['x2'])
+                randY = random.randint(obj['y1'],obj['y2'])
+                mouse.position = (randX,randY)
                 time.sleep(0.01)
-                print("in mouse action")
-                if obj["type"] == TypeEnum.MouseButtonEvent:
-                    if obj["toggle"] == ToggleStatus.PRESSED:
-                        mouse.press(buttons[obj["button"]])
-                    else:
-                        mouse.release(buttons[obj["button"]])
-                elif obj["type"] == TypeEnum.ClickEvent:
-                    mouse.click(buttons[obj["button"]],obj["clickCount"])
-                elif obj["type"] == TypeEnum.MouseScrollEvent:
-                    horizontal_direction, vertical_direction = obj["horizontal_direction"], obj["vertical_direction"]
-                    mouse.scroll(horizontal_direction, vertical_direction)
+
+            elif obj["type"] == TypeEnum.MouseButtonEvent:
+                if obj["toggle"] == ToggleStatus.PRESSED:
+                    mouse.press(buttons[obj["button"]])
+                else:
+                    mouse.release(buttons[obj["button"]])
+
+            elif obj["type"] == TypeEnum.ClickEvent:
+                mouse.click(buttons[obj["button"]],obj["clickCount"])
+
+            elif obj["type"] == TypeEnum.MouseScrollEvent:
+                horizontal_direction, vertical_direction = obj["horizontal_direction"], obj["vertical_direction"]
+                mouse.scroll(horizontal_direction, vertical_direction)
 

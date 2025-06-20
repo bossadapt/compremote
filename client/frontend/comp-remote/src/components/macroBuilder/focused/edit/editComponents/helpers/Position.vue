@@ -11,7 +11,7 @@ defineProps<{
 </script>
 <template>
   <div class="section">
-    <button @click="state.getCord(event.id,xId,yId)">X: {{ (event as any)[xId] }} | Y:{{ (event as any)[xId] }}</button>
+    <button @click="state.getCord(event.id,xId,yId)">X: {{ (event as any)[xId] }} | Y:{{ (event as any)[yId] }}</button>
   </div>
 </template>
 <style></style>

@@ -92,7 +92,8 @@ def play_events(name_of_recording,variables,number_of_plays):
                         subprocess.run(command)
                     except:
                         print("failed to run command:"+ command)  
-
+            elif obj['type'] == TypeEnum.ActionEvent:
+                play_events(obj['action'],obj['variables'],obj['playCount'])
             elif obj['type'] == TypeEnum.MouseMoveEvent:
                 mouse.position = (obj["x"], obj["y"])
                 time.sleep(0.01)   
@@ -112,7 +113,13 @@ def play_events(name_of_recording,variables,number_of_plays):
             elif obj["type"] == TypeEnum.ClickEvent:
                 mouse.click(buttons[obj["button"]],obj["clickCount"])
 
+            elif obj["type"] == TypeEnum.ClickEvent:
+                mouse.click(buttons[obj["button"]],obj["clickCount"])
+
             elif obj["type"] == TypeEnum.MouseScrollEvent:
                 horizontal_direction, vertical_direction = obj["horizontal_direction"], obj["vertical_direction"]
                 mouse.scroll(horizontal_direction, vertical_direction)
+
+            else:
+                print("failed to play unrecognized obj type:",obj['type'])
 

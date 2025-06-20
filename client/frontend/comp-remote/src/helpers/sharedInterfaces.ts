@@ -21,6 +21,7 @@ export enum TypeEnum {
   ClickEvent = 7,
   TerminalEvent = 8,
   RangeMouseMoveEvent = 9,
+  ActionEvent = 10,
 }
 
 export class TerminalEvent {
@@ -108,7 +109,19 @@ export class BrowserEvent {
     if (newWindow !== undefined) this.newWindow = newWindow
   }
 }
-
+export class ActionEvent {
+  action: string = ''
+  variables: Variable[] = []
+  playCount: number = 1
+  id: string
+  type: TypeEnum = TypeEnum.ActionEvent
+  constructor(id: string, action?: string, variables?: Variable[], playCount?: number) {
+    this.id = id
+    if (action !== undefined) this.action = action
+    if (variables !== undefined) this.variables = variables
+    if (playCount !== undefined) this.playCount = playCount
+  }
+}
 export class ClickEvent {
   id: string
   type: TypeEnum = TypeEnum.ClickEvent
@@ -175,6 +188,7 @@ export type EventUnion =
   | ClickEvent
   | TerminalEvent
   | RangeMouseMoveEvent
+  | ActionEvent
 
 export interface Action {
   name: string

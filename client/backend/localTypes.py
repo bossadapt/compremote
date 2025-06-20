@@ -18,15 +18,22 @@ class ToggleStatus(int, Enum):
     RELEASED = 1
 
 #TODO: any of the following
-# handle backend disconnect better from macro builder
 # handle disconnect from bridge better(bridge wont let reconnect)
 # add more sharable forms exe/deb
-# make it so the browser closes after backend failure/ disconnect to not have orphan tabs
 
-# possible events
-# call to selenium to control a website
-# call to existing actions
-# random click in a range(mostly so i get a random youtube video)
+#possible events
+
+class VariableEnum(int, Enum):
+  RawText = 0,
+  EnumText = 1, 
+
+@dataclass
+class Variable():
+    name:str
+    type:VariableEnum
+    options: Optional[List[str]]
+    value: str = ''
+
 class TypeEnum(int, Enum):
     KeyEvent = 0
     MouseMoveEvent = 1
@@ -38,6 +45,15 @@ class TypeEnum(int, Enum):
     ClickEvent = 7
     TerminalEvent = 8 
     RangeMouseMoveEvent = 9
+    ActionEvent = 10
+#TODO: finish adding this in, ensure the user can pass variables into the event somehow
+@dataclass
+class ActionEvent():
+    action: str
+    variables: List[Variable]
+    playCount: int
+    id:str = field(default_factory=generateId)
+    type:int = field(default=TypeEnum.ActionEvent)  
 
 @dataclass
 class TerminalEvent():
@@ -91,8 +107,6 @@ class MouseMoveEvent():
     id:str = field(default_factory=generateId)
     type:int = field(default=TypeEnum.MouseMoveEvent)
 
-
-
 @dataclass
 class MouseButtonEvent():
     toggle: ToggleStatus
@@ -113,18 +127,7 @@ class WaitEvent():
     id:str = field(default_factory=generateId)
     type : int = field(default=TypeEnum.WaitEvent)
 
-EventUnion = Union[TextEvent,BrowserEvent,KeyEvent, MouseMoveEvent,MouseButtonEvent,MouseScrollEvent, WaitEvent, TerminalEvent]
-
-class VariableEnum(int, Enum):
-  RawText = 0,
-  EnumText = 1, 
-
-@dataclass
-class Variable():
-    name:str
-    type:VariableEnum
-    options: Optional[List[str]]
-    value: str = ''
+EventUnion = Union[ActionEvent,ClickEvent,RangeMouseMoveEvent,TextEvent,BrowserEvent,KeyEvent, MouseMoveEvent,MouseButtonEvent,MouseScrollEvent, WaitEvent, TerminalEvent]
 
     
 @dataclass 

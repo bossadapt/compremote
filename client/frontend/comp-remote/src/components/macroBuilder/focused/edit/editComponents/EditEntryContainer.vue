@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { TypeEnum } from '../../../../../helpers/sharedInterfaces'
 import type {
+  ActionEvent,
   BrowserEvent,
   ClickEvent,
   EventUnion,
@@ -18,6 +19,7 @@ import MouseButtonEventInner from './inners/MouseButtonEventInner.vue'
 import MouseMoveEventInner from './inners/MouseMoveEventInner.vue'
 import MouseScrollEventInner from './inners/MouseScrollEventInner.vue'
 import WaitEventInner from './inners/WaitEventInner.vue'
+import ActionEventInner from './inners/ActionEventInner.vue'
 import { useMacroBuilderStore } from '@/stores/macroBuilder'
 import AddEvent from './helpers/AddEvent.vue'
 import BrowserEventInner from './inners/BrowserEventInner.vue'
@@ -81,6 +83,10 @@ defineProps<{
           v-else-if="event.type === TypeEnum.RangeMouseMoveEvent"
           :event="event as RangeMouseMoveEvent"
         ></RangeMouseMoveEventInner>
+        <ActionEventInner
+          v-else-if="event.type === TypeEnum.ActionEvent"
+          :event="event as ActionEvent"
+        ></ActionEventInner>
       </div>
 
       <button @click="state.removeEvent(idx)" class="remove">❌</button>

@@ -62,7 +62,8 @@ export const useRecieverStore = defineStore('reciever', () => {
     }
 
     ws.onclose = () => {
-      console.log('WebSocket closed')
+      console.log('lost connection to backend briding server, closing')
+      window.close()
       ws = null
     }
 

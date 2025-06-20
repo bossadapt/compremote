@@ -13,6 +13,7 @@ import {
   WaitEvent,
   TerminalEvent,
   RangeMouseMoveEvent,
+  ActionEvent,
 } from '@/helpers/sharedInterfaces'
 import type { Action, EventUnion, Variable } from '@/helpers/sharedInterfaces'
 import isValidFilename from 'valid-filename'
@@ -62,6 +63,10 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
         'failed to grab initial state from backend(' + count + '), Trying again in 1 sec',
       )
       sleep(1000)
+      if (count > 10) {
+        //backend failed for some reason, giving it 10 retries then closing it
+        window.close()
+      }
       syncActions(count++)
       console.error(error)
     }
@@ -344,6 +349,9 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
         break
       case TypeEnum.RangeMouseMoveEvent:
         newEntry = new RangeMouseMoveEvent(generatedId)
+        break
+      case TypeEnum.ActionEvent:
+        newEntry = new ActionEvent(generatedId)
         break
       case TypeEnum.Clone:
         const prev = focusedAction.value?.events[idx - 1]

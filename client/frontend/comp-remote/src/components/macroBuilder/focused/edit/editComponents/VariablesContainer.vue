@@ -44,8 +44,7 @@ function removeEnumOption(index: number, enumIndex: number) {
 <template>
   <div class="main">
     <div class="main-edit-container">
-      <div class="section">
-        <h3>Variables:</h3>
+      <div class="section" style="margin-top: 10px;">
         <div>
           <table>
             <thead>

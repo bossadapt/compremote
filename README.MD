@@ -69,3 +69,5 @@ cd <compremote-directory>
 just run
 ```
 
+# Credits
+logo yoinked from: https://www.flaticon.com/free-icon/remote_514075?term=remote&related_id=514075

@@ -5,6 +5,7 @@ import draggable from 'vuedraggable'
 import VariablesContainer from './editComponents/VariablesContainer.vue'
 let state = useMacroBuilderStore()
 
+
 </script>
 <template>
   <div class="focus-main-header">

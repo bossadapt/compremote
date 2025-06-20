@@ -143,11 +143,18 @@ export class WaitEvent {
     if (time !== undefined) this.time = time
   }
 }
+export enum VariableEnum {
+  RawText = 0,
+  EnumText = 1,
+}
 export class Variable {
   name: string = ''
+  type: VariableEnum = VariableEnum.RawText
   value: string = ''
-  constructor(name?: string, defaultValue?: string) {
+  options?: string[] = undefined
+  constructor(type?: VariableEnum, name?: string, defaultValue?: string) {
     if (name) this.name = name
+    if (type) this.type = type
     if (defaultValue) this.value = defaultValue
   }
 }
@@ -166,4 +173,8 @@ export interface Action {
   name: string
   variables: Variable[]
   events: EventUnion[]
+}
+export interface ClientSideAction {
+  name: string
+  variables: Variable[]
 }

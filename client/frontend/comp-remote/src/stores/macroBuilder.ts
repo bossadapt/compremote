@@ -187,6 +187,7 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
   }
   function validateVariables(variables: Variable[]) {
     console.log('validate variables called')
+    //Name Check
     let variablesSet = new Set<string>()
     for (let i = 0; i < variables.length; i++) {
       let current = variables[i].name.trim()
@@ -204,6 +205,7 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
         return false
       }
     }
+    //Type minimums met
     return true
   }
   function saveAction(action2save: Action, isNew: boolean) {

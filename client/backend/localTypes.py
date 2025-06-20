@@ -1,4 +1,4 @@
-from typing import Union, List
+from typing import Optional, Union, List
 from enum import Enum
 from dataclasses import dataclass, field
 import random
@@ -149,10 +149,17 @@ class WaitEvent():
         self.id = generateId()
 EventUnion = Union[TextEvent,BrowserEvent,KeyEvent, MouseMoveEvent,MouseButtonEvent,MouseScrollEvent, WaitEvent, TerminalEvent]
 
+class VariableEnum(int, Enum):
+  RawText = 0,
+  EnumText = 1, 
+
 @dataclass
 class Variable():
     name:str
-    defaultValue:str
+    type:VariableEnum
+    options: Optional[List[str]]
+    value: str = ''
+
     
 @dataclass 
 class Action():

@@ -1,20 +1,10 @@
 <script setup lang="ts">
 import { useMacroBuilderStore } from '@/stores/macroBuilder'
-import AddEvent from './editComponents/helpers/AddEvent.vue'
 import EditEntryContainer from './editComponents/EditEntryContainer.vue'
 import draggable from 'vuedraggable'
 import VariablesContainer from './editComponents/VariablesContainer.vue'
-import { TypeEnum } from '@/helpers/sharedInterfaces'
-import { onMounted } from 'vue'
 let state = useMacroBuilderStore()
-function handleClick() {
-  console.log('clicked');
-  state.playFocused();
-}
 
-onMounted(() => {
-  console.log('Component mounted');
-});
 </script>
 <template>
   <div class="focus-main-header">
@@ -38,7 +28,9 @@ onMounted(() => {
   </div>
   <div class="focus-hr"></div>
   <div class="edit-list-container">
-    <VariablesContainer />
+    <ul>
+      <VariablesContainer />
+    </ul>
     <draggable
       v-if="state.focusedAction && state.focusedAction.events"
       tag="ul"

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useStateStore } from '@/stores/state'
 import { ref, type Ref } from 'vue'
+import { VariableEnum } from '../../../../client/frontend/comp-remote/src/helpers/sharedInterfaces';
 const state = useStateStore()
 </script>
 <template>
@@ -9,7 +10,11 @@ const state = useStateStore()
       <h2>Choose Variables</h2>
       <div class="var-container" v-for="varr in state.focusedAction.variables">
         <h2 class="var-title">{{ varr.name }}</h2>
-        <input class="var-input" type="text" v-model="varr.value" />
+        <input v-if="varr.type===VariableEnum.RawText" class="var-input" type="text" v-model="varr.value" />
+        <select v-else class="var-input" type="text" v-model="varr.value">
+          <option v-for="option in varr.options" :value="option">{{ option }}</option>
+        </select>
+
       </div>
       <div class="popup-button-container">
         <button class="content-buttons" @click="state.focusedAction = null">Cancel</button>
@@ -19,6 +24,9 @@ const state = useStateStore()
   </div>
 </template>
 <style scoped>
+select{
+  color: black;
+}
 .var-container{
  width: 100%;
  margin-bottom: 10px;

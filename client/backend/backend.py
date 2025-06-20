@@ -15,11 +15,18 @@ from singles import get_next_key, get_cord, get_next_button
 app = Flask(__name__)
 CORS(app)
 #initialize frontend
+#TODO: before release, swap
+#prod
+#process = subprocess.Popen(
+#    ["npx","serve", "-s", "dist","-p","5173"],
+#    cwd="./../frontend/comp-remote"
+#)
+
+#dev
 process = subprocess.Popen(
-    ["npx","serve", "-s", "dist","-p","5173"],
+    ["npm","run","dev"],
     cwd="./../frontend/comp-remote"
 )
-
 #delayed cleanup listening for ctrl+c or sys shutdown or killed
 def cleanup(signum, frame):
     global process

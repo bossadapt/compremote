@@ -1,12 +1,15 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import type { Ref } from 'vue'
-
-type Action = { name: string; variables: { name: string; value: string }[] }
+import {
+  VariableEnum,
+  type ClientSideAction,
+  type Variable,
+} from '@/../../../client/frontend/comp-remote/src/helpers/sharedInterfaces'
 export const useStateStore = defineStore('state', () => {
   const hostname = 'https://bossadapt.org/remote/api'
-  const actions: Ref<Action[]> = ref([])
-  const focusedAction: Ref<Action | null> = ref(null)
+  const actions: Ref<ClientSideAction[]> = ref([])
+  const focusedAction: Ref<ClientSideAction | null> = ref(null)
   const loggedIn = ref(false)
   const warningMessage: Ref<string | null> = ref(null)
 
@@ -70,7 +73,16 @@ export const useStateStore = defineStore('state', () => {
       })
     }
   }
-  function play(action: Action) {
+
+  // function validateVariables(variables: Variable[]) {
+  //   for(let i =0; i<variables.length;i++){
+  //     const curVar = variables[i]
+  //     if(curVar.type === VariableEnum.EnumText){
+
+  //     }
+  //   }
+  // }
+  function play(action: ClientSideAction) {
     fetch(hostname + '/play', {
       credentials: 'include',
       method: 'PATCH',
@@ -91,7 +103,7 @@ export const useStateStore = defineStore('state', () => {
     })
     focusedAction.value = null
   }
-  function attemptPlay(action: Action) {
+  function attemptPlay(action: ClientSideAction) {
     if (action.variables.length > 0) {
       //bring up the popup screen for the variables
       focusedAction.value = action

@@ -8,20 +8,35 @@ import time
 import json
 import sys
 import webbrowser
-from localTypes import EventUnion, TypeEnum, ToggleStatus
+from localTypes import EventUnion, TypeEnum, ToggleStatus, VariableEnum
 #variables that get passed should be {'name':'variable Name','value':'variable value'}
 
 
 def replace_all_variables(events,savedVariables,variablesGiven):
-#filters out invalid variables possibly given
+    #decide if a var is default or overwritten
     given_dict = {v['name']: v for v in variablesGiven}
     variables = []
     for existingVariable in savedVariables:
         if existingVariable['name'] in given_dict:
-            variables.append(given_dict[existingVariable['name']])
+            currentGiven = given_dict[existingVariable['name']]
+            if existingVariable['type'] == VariableEnum.EnumText:
+                currentUsed = False
+                for option in existingVariable['options']:
+                    if currentGiven['value'] == option:
+                        variables.append(currentGiven)
+                        currentUsed = True
+                        break;
+                #Tried to use a value not presented in options
+                if not currentUsed:
+                    variables.append(existingVariable)
+            else:
+                #Raw Text var found
+                variables.append(given_dict[existingVariable['name']])
         else:
+            #overwrite var not given
             variables.append(existingVariable)
-#value checks to ensure nothing fishy going on
+    
+    #find and replace variables
     for event in events:
         if event['type'] == TypeEnum.BrowserEvent:
             for var in variables:

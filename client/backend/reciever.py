@@ -138,7 +138,3 @@ class RecieverClient:
             self.websocket.close()
         if self.thread:
             self.thread.join()
-#TODO: make it possible to run reciever client without frontend again
-# if __name__ == "__main__":
-#    client = RecieverClient()
-#    client.start()

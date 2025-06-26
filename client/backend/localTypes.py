@@ -46,7 +46,7 @@ class TypeEnum(int, Enum):
     TerminalEvent = 8 
     RangeMouseMoveEvent = 9
     ActionEvent = 10
-#TODO: finish adding this in, ensure the user can pass variables into the event somehow
+
 @dataclass
 class ActionEvent():
     action: str

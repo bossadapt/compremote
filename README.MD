@@ -10,13 +10,15 @@ To get a better understanding of how to install and its capabilities, check out 
 
 * **Browser** – Opens a URL in your default browser, either in a new tab or window.
 * **Key** – Simulates key press or release.
-* **Mouse Button** – Presses or releases a mouse button at a specified location.
+* **Mouse Button** – Presses or releases a mouse button.
 * **Mouse Move** – Moves the mouse cursor to a specified location.
-* **Mouse Scroll** – Scrolls vertically and/or horizontally at a specified location.
+* **Mouse Move Range** – Move mouse to a random location within a box created by two positions
+* **Mouse Scroll** – Scrolls vertically and/or horizontally.
 * **Wait** – Pauses the macro before proceeding to the next action.
 * **Text** – Types out the specified text.
 * **Click** – Simulates a mouse button press and release a specified number of times at a specific location.
 * **Terminal** – Executes a list of subprocesses using the given commands.
+* **Action** – Executes another Action(WARNING: indirect infinite recursion is possible).
 
 ---
 
@@ -28,6 +30,9 @@ To get a better understanding of how to install and its capabilities, check out 
 * Basic one-time password (OTP) to session support to allow a single remote user to control the receiver bridge while it's active without having to re-login.
 
 ---
+
+## Basic Explanation of interconnectedness:
+![structure image](./images%20for%20github/compremoteStructure.drawio.png.png "3 backends 2 frontends")
 
 ## Requirements
 
@@ -57,7 +62,7 @@ cd <desired-directory>
 git clone https://github.com/bossadapt/compremote.git
 cd compremote
 just init
-just run
+just prod
 ```
 
 ### Running After Installation
@@ -66,7 +71,7 @@ It's recommended to create an alias for convenience.
 
 ```bash
 cd <compremote-directory>
-just run
+just prod
 ```
 
 # Credits

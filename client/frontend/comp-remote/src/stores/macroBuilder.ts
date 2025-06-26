@@ -173,6 +173,19 @@ export const useMacroBuilderStore = defineStore('macroBuilder', () => {
           }
           break
         }
+        case TypeEnum.ActionEvent: {
+          let tempCurrent = current as ActionEvent
+          if (actions.value.findIndex((act) => act.name === tempCurrent.action) === -1) {
+            createWarningMessage('Invalid action for Action event(event #' + (i + 1) + ')')
+            return false
+          }
+          if (!input2number(current, 'playCount', 1, 1)) {
+            createWarningMessage('Invalid playCount for Action event(event #' + (i + 1) + ')')
+            return false
+          }
+
+          break
+        }
         case TypeEnum.WaitEvent: {
           if (!input2number(current, 'time', 0, 0)) {
             createWarningMessage('Invalid Time for wait event(event #' + (i + 1) + ')')

@@ -51,11 +51,15 @@ def replace_all_variables(events,savedVariables,variablesGiven):
                     event['commands'][index] = event['commands'][index].replace('#:{}:'.format(var['name']),var['value'])
 
 def play_events(name_of_recording,variables,number_of_plays):
-    with open(name_of_recording) as json_file:
-        contents = json.load(json_file)
-        data:List[EventUnion] = contents['events']
-        existingVariables:List[str] = contents['variables']
-        replace_all_variables(data,existingVariables,variables)
+    try:
+        with open(name_of_recording) as json_file:
+            contents = json.load(json_file)
+            data:List[EventUnion] = contents['events']
+            existingVariables:List[str] = contents['variables']
+            replace_all_variables(data,existingVariables,variables)
+    except:
+        print("failed to play event due to not being able to load the file(deleted or corrupted)")
+        return False
     special_keys = {"Key.shift": Key.shift, "Key.tab": Key.tab, "Key.caps_lock": Key.caps_lock, "Key.ctrl": Key.ctrl, "Key.alt": Key.alt, "Key.cmd": Key.cmd, "Key.cmd_r": Key.cmd_r, "Key.alt_r": Key.alt_r, "Key.ctrl_r": Key.ctrl_r, "Key.shift_r": Key.shift_r, "Key.enter": Key.enter, "Key.backspace": Key.backspace, "Key.f19": Key.f19, "Key.f18": Key.f18, "Key.f17": Key.f17, "Key.f16": Key.f16, "Key.f15": Key.f15, "Key.f14": Key.f14, "Key.f13": Key.f13, "Key.media_volume_up": Key.media_volume_up, "Key.media_volume_down": Key.media_volume_down, "Key.media_volume_mute": Key.media_volume_mute, "Key.media_play_pause": Key.media_play_pause, "Key.f6": Key.f6, "Key.f5": Key.f5, "Key.right": Key.right, "Key.down": Key.down, "Key.left": Key.left, "Key.up": Key.up, "Key.page_up": Key.page_up, "Key.page_down": Key.page_down, "Key.home": Key.home, "Key.end": Key.end, "Key.delete": Key.delete, "Key.space": Key.space}
     buttons = { "Button.left": Button.left,"Button.right": Button.right,"Button.middle": Button.middle,"Button.button8": Button.button8,"Button.button9": Button.button9,"Button.button10": Button.button10,"Button.button11": Button.button11,"Button.button12": Button.button12,"Button.button13": Button.button13,"Button.button14": Button.button14,"Button.button15": Button.button15,"Button.button16": Button.button16,"Button.button17": Button.button17,"Button.button18": Button.button18,"Button.button19": Button.button19,"Button.button20": Button.button20,"Button.button21": Button.button21,"Button.button22": Button.button22,"Button.button23": Button.button23,"Button.button24": Button.button24,"Button.button25": Button.button25,"Button.button26": Button.button26,"Button.button27": Button.button27,"Button.button28": Button.button28,"Button.button29": Button.button29,"Button.button30": Button.button30,"Button.scroll_down": Button.scroll_down,"Button.scroll_left": Button.scroll_left,"Button.scroll_right": Button.scroll_right,"Button.scroll_up": Button.scroll_up}    
     mouse = MouseController()
@@ -93,7 +97,7 @@ def play_events(name_of_recording,variables,number_of_plays):
                     except:
                         print("failed to run command:"+ command)  
             elif obj['type'] == TypeEnum.ActionEvent:
-                play_events(obj['action'],obj['variables'],obj['playCount'])
+                play_events('actions/{}.txt'.format(obj['action']),obj['variables'],obj['playCount'])
             elif obj['type'] == TypeEnum.MouseMoveEvent:
                 mouse.position = (obj["x"], obj["y"])
                 time.sleep(0.01)   

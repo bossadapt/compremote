@@ -22,6 +22,7 @@ let typeToAddAfter = ref(props.typeParam)
       <option :value="TypeEnum.TextEvent">Text Event</option>
       <option :value="TypeEnum.ClickEvent">Click Event</option>
       <option :value="TypeEnum.TerminalEvent">Terminal Event</option>
+      <option :value="TypeEnum.ActionEvent">Action Event</option>
       <option :value="TypeEnum.Clone">Clone</option>
     </select>
     <button class="main-add-button" @click="state.addEvent(idx, typeToAddAfter)">ADD AFTER</button>

@@ -2,3 +2,4 @@ Flask==3.0.2
 flask-cors==6.0.1
 websockets==15.0.1 
 pynput==1.8.1
+waitress==3.0.2

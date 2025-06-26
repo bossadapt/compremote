@@ -1,6 +1,7 @@
 import subprocess
 import sys
-from flask import Flask, request
+import threading
+from flask import Flask, request, send_from_directory
 from flask_cors import CORS
 from record import record_events
 from play import play_events
@@ -11,42 +12,30 @@ import os
 import signal
 from reciever import RecieverServer
 from singles import get_next_key, get_cord, get_next_button
+#global flask app
+if os.environ['ENV'] == 'prod':
+    app = Flask(__name__, static_folder="../frontend/comp-remote/dist", static_url_path="/")
+else:
+    app = Flask(__name__)
 
-app = Flask(__name__)
-CORS(app)
-#initialize frontend
-#TODO: before release, swap
-#prod
-#process = subprocess.Popen(
-#    ["npx","serve", "-s", "dist","-p","5173"],
-#    cwd="./../frontend/comp-remote"
-#)
+#whether the frontend will be served by flask or npm run dev
+if os.environ['ENV'] == 'prod':
+    @app.route("/")
+    def index():
+        return send_from_directory(app.static_folder, "index.html")
 
-#dev
-process = subprocess.Popen(
-    ["npm","run","dev"],
-    cwd="./../frontend/comp-remote"
-)
-#delayed cleanup listening for ctrl+c or sys shutdown or killed
-def cleanup(signum, frame):
-    global process
-    process.terminate()
-    process.wait()
-    sys.exit(0)
+    @app.route("/<path:path>")
+    def serve_static(path):
+        return send_from_directory(app.static_folder, path)
+else :
+    process = subprocess.Popen(["npm","run","dev"],cwd="./../frontend/comp-remote")
+    def cleanup(signum, frame):
+        process.terminate()
+        process.wait()
+        sys.exit(0)
+    signal.signal(signal.SIGINT, cleanup)
+    signal.signal(signal.SIGTERM, cleanup)
 
-signal.signal(signal.SIGINT, cleanup)
-signal.signal(signal.SIGTERM, cleanup)
-time.sleep(1)
-
-#open the window to display
-webbrowser.open("http://localhost:5173")
-
-#open a websocket to allow the user to activate and monitor the online bridge
-reciever_server = RecieverServer()
-reciever_server.run_in_background()
-@app.route("/")
-def helloWorld():
-    return {"status": "healthy"}
 
 @app.route("/record", methods=['GET'])
 def record():
@@ -106,3 +95,30 @@ def getActions():
                  fileContents =  json.load(file)
                  actions.append({"name":fileNameWithExt[:-4],"variables":fileContents["variables"],"events":fileContents["events"]})
     return actions
+
+def runServer():
+    if env == "prod":
+        from waitress import serve
+        serve(app, port=3334)
+
+    else:
+        app.run(port=3334)
+
+if __name__ == "__main__":
+    env = os.environ.get("ENV", "dev")
+    CORS(app)
+
+    #bridge connection
+    reciever_server = RecieverServer()
+    reciever_server.run_in_background()
+    #api connection
+    server_thread = threading.Thread(target=runServer, daemon=True)
+    server_thread.start()
+    time.sleep(1)
+
+    if env == "prod":
+        webbrowser.open("http://localhost:3334")
+    else:
+        webbrowser.open("http://localhost:5173")
+
+    server_thread.join()

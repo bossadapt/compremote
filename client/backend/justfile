@@ -2,5 +2,7 @@ init:
     python3 -m venv venv
     . venv/bin/activate && pip install -r requirements.txt
     cd ./../frontend/comp-remote/ && npm install && npm run build
-run:
-    . venv/bin/activate && flask --app backend run -p 3334
+dev:
+    . venv/bin/activate && ENV=dev python backend.py
+prod:
+    . venv/bin/activate && ENV=prod python backend.py

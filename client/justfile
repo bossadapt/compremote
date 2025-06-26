@@ -1,4 +1,6 @@
 init:
     cd backend && just init
-run:
-    cd backend && just run
+prod:
+    cd backend && just prod
+dev:
+    cd backend && just dev

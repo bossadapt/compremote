@@ -32,7 +32,7 @@ To get a better understanding of how to install and its capabilities, check out 
 ---
 
 ## Basic Explanation of interconnectedness:
-![structure image](./images%20for%20github/compremoteStructure.drawio.png.png "3 backends 2 frontends")
+![structure image](./images%20for%20github/compremoteStructure.drawio.png "3 backends 2 frontends")
 
 ## Requirements
 

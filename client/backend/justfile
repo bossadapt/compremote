@@ -6,3 +6,11 @@ dev:
     . venv/bin/activate && ENV=dev python backend.py
 prod:
     . venv/bin/activate && ENV=prod python backend.py
+build: init
+    rm -rf ./../builds
+    mkdir ./../builds
+    . venv/bin/activate && pip install pyinstaller && python -m PyInstaller --onefile backend.py --name compremote --add-data "../frontend/comp-remote/dist:dist"
+    mv ./dist/compremote ./../builds
+    rm -rf ./dist
+runBuild:
+    ./../builds/compremote

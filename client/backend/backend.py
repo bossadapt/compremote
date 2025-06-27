@@ -12,14 +12,25 @@ import os
 import signal
 from reciever import RecieverServer
 from singles import get_next_key, get_cord, get_next_button
+env = os.environ.get("ENV", "prod")
+if not os.path.exists("./actions"):
+    os.makedirs("./actions")
+if getattr(sys, 'frozen', False):
+    # We're in a PyInstaller bundle
+    static_folder = os.path.join(sys._MEIPASS, "dist")
+else:
+    # We're running from source
+    static_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), "../frontend/comp-remote/dist"))
+
+
 #global flask app
-if os.environ['ENV'] == 'prod':
-    app = Flask(__name__, static_folder="../frontend/comp-remote/dist", static_url_path="/")
+if env == 'prod':
+    app = Flask(__name__, static_folder=static_folder, static_url_path="/")
 else:
     app = Flask(__name__)
 
 #whether the frontend will be served by flask or npm run dev
-if os.environ['ENV'] == 'prod':
+if env == 'prod':
     @app.route("/")
     def index():
         return send_from_directory(app.static_folder, "index.html")
@@ -105,7 +116,6 @@ def runServer():
         app.run(port=3334)
 
 if __name__ == "__main__":
-    env = os.environ.get("ENV", "dev")
     CORS(app)
 
     #bridge connection

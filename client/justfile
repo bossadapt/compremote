@@ -4,3 +4,5 @@ prod:
     cd backend && just prod
 dev:
     cd backend && just dev
+build:
+    cd backend && just build

@@ -12,9 +12,12 @@ import os
 import signal
 from reciever import RecieverServer
 from singles import get_next_key, get_cord, get_next_button
+
 env = os.environ.get("ENV", "prod")
-if not os.path.exists("./actions"):
-    os.makedirs("./actions")
+basePathForActions = os.path.expanduser('~/.local/share/compremote')
+
+os.makedirs(basePathForActions, exist_ok=True)
+ 
 if getattr(sys, 'frozen', False):
     # We're in a PyInstaller bundle
     static_folder = os.path.join(sys._MEIPASS, "dist")
@@ -56,7 +59,7 @@ def record():
 def play():
     data = request.get_json()
     action_name = data['name']
-    play_events('actions/{}.txt'.format(action_name),[],1)
+    play_events(basePathForActions+'/{}.txt'.format(action_name),[],1)
     return {"status": "finished"}
 
 @app.route("/actions/save/", methods=['PATCH'])
@@ -66,7 +69,7 @@ def saveAction():
     action_name = data['name']
     events = data['events']
     variables = data['variables']
-    with open('actions/{}.txt'.format(action_name), 'w') as outfile:
+    with open(basePathForActions+'/{}.txt'.format(action_name), 'w') as outfile:
                 json.dump({"variables":variables,"events":events}, outfile)
     return {"status": "finished"}
 
@@ -75,14 +78,14 @@ def renameAction():
     data = request.get_json()
     oldName = data['old']
     newName = data['new']
-    os.rename("./actions/{}.txt".format(oldName),"./actions/{}.txt".format(newName))
+    os.rename(basePathForActions+'/{}.txt'.format(oldName),basePathForActions+'/{}.txt'.format(newName))
     return {"status": "finished"}
 
 @app.route("/actions/remove/", methods=['DELETE'])
 def removeAction():
     data = request.get_json()
     action_name = data['name']
-    os.remove("./actions/{}.txt".format(action_name))
+    os.remove(basePathForActions+'/{}.txt'.format(action_name))
     return {"status": "finished"}
 @app.route("/getKey")
 def getKey():
@@ -98,11 +101,11 @@ def getButton():
 
 @app.route("/actions")
 def getActions():
-    dirList = os.listdir("./actions")
+    dirList = os.listdir(basePathForActions)
     actions = []
     for fileNameWithExt in dirList:
         if(fileNameWithExt != ".gitkeep"):
-             with open("./actions/{}".format(fileNameWithExt),'r') as file:
+             with open(basePathForActions+'/{}'.format(fileNameWithExt),'r') as file:
                  fileContents =  json.load(file)
                  actions.append({"name":fileNameWithExt[:-4],"variables":fileContents["variables"],"events":fileContents["events"]})
     return actions

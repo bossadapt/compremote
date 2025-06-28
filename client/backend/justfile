@@ -1,16 +1,39 @@
-init:
-    python3 -m venv venv
-    . venv/bin/activate && pip install -r requirements.txt
-    cd ./../frontend/comp-remote/ && npm install && npm run build
+
 dev:
     . venv/bin/activate && ENV=dev python backend.py
 prod:
     . venv/bin/activate && ENV=prod python backend.py
+init:
+    python3 -m venv venv
+    . venv/bin/activate && pip install -r requirements.txt
+    cd ./../frontend/comp-remote/ && npm install && npm run build
+
 build: init
     rm -rf ./../builds
     mkdir ./../builds
+    just build-exe
+    just build-appimage
+    
+build-exe:
     . venv/bin/activate && pip install pyinstaller && python -m PyInstaller --onefile backend.py --name compremote --add-data "../frontend/comp-remote/dist:dist"
     mv ./dist/compremote ./../builds
     rm -rf ./dist
+
+build-appimage:
+    wget https://github.com/linuxdeploy/linuxdeploy/releases/latest/download/linuxdeploy-x86_64.AppImage
+    wget https://github.com/linuxdeploy/linuxdeploy-plugin-appimage/releases/latest/download/linuxdeploy-plugin-appimage-x86_64.AppImage
+    chmod +x linuxdeploy-*.AppImage
+    mkdir -p ./../builds/AppDir/usr/bin
+    mkdir -p ./../builds/AppDir/usr/share/applications
+    mkdir -p ./../builds/AppDir/usr/share/icons/hicolor/256x256/apps
+    cp ./../builds/compremote ./../builds/AppDir/usr/bin/
+    cp ./compremote.png ./../builds/AppDir/usr/share/icons/hicolor/256x256/apps/
+    echo "[Desktop Entry]\nType=Application\nName=CompRemote\nExec=compremote\nIcon=compremote\nCategories=Utility;" > ./../builds/AppDir/usr/share/applications/compremote.desktop
+    ./linuxdeploy-x86_64.AppImage --appdir=./../builds/AppDir \
+        --desktop-file=./../builds/AppDir/usr/share/applications/compremote.desktop \
+        --icon-file=./compremote.png \
+        --output=appimage
+    rm linuxdeploy*
+    mv ./CompRemote* ./../builds
 runBuild:
     ./../builds/compremote

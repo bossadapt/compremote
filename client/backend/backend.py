@@ -14,6 +14,7 @@ from reciever import RecieverServer
 from singles import get_next_key, get_cord, get_next_button
 
 env = os.environ.get("ENV", "prod")
+#make sure to update the reciever version as well if changed
 basePathForActions = os.path.expanduser('~/.local/share/compremote')
 
 os.makedirs(basePathForActions, exist_ok=True)

@@ -6,6 +6,10 @@ from websockets.sync.client import connect
 from play import play_events
 from websockets.asyncio.server import serve
 from localTypes import RecieverStatus
+
+basePathForActions = os.path.expanduser('~/.local/share/compremote')
+
+
 #used to pass updates/events between the frontend and reciever
 class RecieverServer:
     def __init__(self):
@@ -88,11 +92,11 @@ class RecieverClient:
                         self.room_key = ''
                         self.sendUpdate2Frontend({'type':"bridgeActive"})
                     elif message["req"] == "actions":
-                        dirList = os.listdir("./actions")
+                        dirList = os.listdir(basePathForActions)
                         actions = []
                         for dir in dirList:
                             if(dir != ".gitkeep"):
-                                with open("./actions/{}".format(dir),'r') as file:
+                                with open(basePathForActions+"/{}".format(dir),'r') as file:
                                     fileContents =  json.load(file)
                                     actions.append({'name':dir[:-4], 'variables' : fileContents["variables"]})
                         
@@ -105,7 +109,7 @@ class RecieverClient:
                         action = message["action"]
                         self.sendUpdate2Frontend({'type':"newRequest",'request':{'type':'play','desc':"requested play of {}".format(message["action"])}})
                         try:
-                            play_events('./actions/{}.txt'.format(action['name']),action["variables"],1)
+                            play_events(basePathForActions+'/{}.txt'.format(action['name']),action["variables"],1)
                             websocket.send("finished")
                         except Exception as e:
                             print(e)
